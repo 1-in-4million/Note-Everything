@@ -349,6 +349,17 @@ Immediately invoked function expression:
 2.不需要给方法命名;
 3.能够获得函数中的一些属性.
 ```
+### 自调用函数
+```
+(function () {
+    var x = "Hello!!";      // 我将调用自己
+})();
+
+不能自调用声明的函数。
+
+通过添加括号，来说明它是一个函数表达式;
+以上函数实际上是一个 匿名自我调用的函数 (没有函数名).
+```
 ### 回调函数
 ```
 
@@ -947,6 +958,525 @@ document.getElementById("p2").style.fontSize="larger";
 <input type="button" value="隐藏文本" onclick="document.getElementById('p1').style.visibility='hidden'" />
 <input type="button" value="显示文本" onclick="document.getElementById('p1').style.visibility='visible'" />
 ```
+### HTML DOM
+#### 示例一
+```
+从事件处理器调用一个函数：
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<head>
+<script>
+function changetext(id){
+	id.innerHTML="Ooops!";
+}
+</script>
+</head>
+<body>
+
+<h1 onclick="changetext(this)">点击文本!</h1>
+
+</body>
+</html>
+```
+#### HTML事件属性
+##### 使用 HTML DOM 分配事件
+```
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<head>
+</head>
+<body>
+
+<p>点击按钮执行 <em>displayDate()</em> 函数.</p>
+<button id="myBtn">点这里</button>
+<script>
+document.getElementById("myBtn").onclick=function(){displayDate()};
+function displayDate(){
+	document.getElementById("demo").innerHTML=Date();
+}
+</script>
+<p id="demo"></p>
+
+</body>
+</html>
+
+名为 displayDate 的函数被分配给 id="myBtn" 的 HTML 元素。
+```
+##### onload 和 onunload 事件
+```
+onload 和 onunload 事件会在用户进入或离开页面时被触发;
+onload 事件可用于检测访问者的浏览器类型和浏览器版本，
+并基于这些信息来加载网页的正确版本:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body onload="checkCookies()">
+
+<script>
+function checkCookies(){
+	if (navigator.cookieEnabled==true){
+		alert("Cookies 可用")
+	}
+	else{
+		alert("Cookies 不可用")
+	}
+}
+</script>
+<p>弹窗-提示浏览器 cookie 是否可用。</p>
+	
+</body>
+</html
+```
+##### onchange 事件
+```
+onchange 事件常结合对输入字段的验证来使用;
+当用户改变输入字段的内容时，会调用 upperCase() 函数:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<head>
+<script>
+function myFunction(){
+	var x=document.getElementById("fname");
+	x.value=x.value.toUpperCase();
+}
+</script>
+</head>
+<body>
+
+输入你的名字: <input type="text" id="fname" onchange="myFunction()">
+<p>当你离开输入框后，函数将被触发，将小写字母转为大写字母。</p>
+
+</body>
+</html>
+```
+##### onmouseover 和 onmouseout 事件
+```
+onmouseover 和 onmouseout 事件可用于在用户的鼠标移至 HTML 元素上方或移出元素时触发函数:
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<div onmouseover="mOver(this)" onmouseout="mOut(this)" style="background-color:#D94A38;width:120px;height:20px;padding:40px;">Mouse Over Me</div>
+<script>
+function mOver(obj){
+	obj.innerHTML="Thank You"
+}
+function mOut(obj){
+	obj.innerHTML="Mouse Over Me"
+}
+</script>
+
+</body>
+</html>
+```
+##### onmousedown/onmouseup 事件
+```
+点击/释放鼠标时触发事件
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<head>
+<script>
+function lighton(){
+	document.getElementById('myimage').src="bulbon.gif";
+}
+function lightoff(){
+	document.getElementById('myimage').src="bulboff.gif";
+}
+</script>
+</head>
+
+<body>
+<img id="myimage" onmousedown="lighton()" onmouseup="lightoff()" src="bulboff.gif" width="100" height="180" />
+<p>点击不释放鼠标灯将一直亮着!</p>
+</body>
+</html>
+```
+##### onfocus/onfocusout 事件
+```
+获得/失去焦点触发事件：
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<head>
+<script>
+function myFunction(x){
+	x.style.background="yellow";
+}
+	function myFunction1(x){
+		x.style.background="white";
+	}
+</script>
+</head>
+<body>
+
+输入你的名字: <input type="text" onfocus="myFunction(this)"onfocusout="myFunction1(this)">
+<p>当输入框获取焦点时，修改背景色（background-color属性） 将被触发，失去焦点恢复。</p>
+
+</body>
+</html>
+```
+### EventListener
+#### addEventListener() 方法
+##### 示例
+```
+点击按钮时触发监听事件：
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<p>该实例使用 addEventListener() 方法在按钮中添加点击事件。 </p>
+<button id="myBtn">点我</button>
+<p id="demo"></p>
+<script>
+document.getElementById("myBtn").addEventListener("click", displayDate);
+function displayDate() {
+    document.getElementById("demo").innerHTML = Date();
+}
+</script>
+
+</body>
+</html>
+```
+##### 语法
+```
+element.addEventListener(event, function, useCapture);
+
+第一个参数是事件的类型 (如 "click" 或 "mousedown");
+第二个参数是事件触发后调用的函数;
+第三个参数是个布尔值用于描述事件是冒泡还是捕获。该参数是可选的.
+```
+##### 向原元素添加事件句柄
+```
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<p>该实例使用 addEventListener() 方法在按钮中添加点击事件。 </p>
+<button id="myBtn">点我</button>
+<script>
+document.getElementById("myBtn").addEventListener("click", function(){
+    alert("Hello World!");
+});
+</script>
+
+</body>
+</html>
+
+------------------------------------------------------------------------
+
+使用函数名，来引用外部函数：
+<p>该实例使用 addEventListener() 方法在用户点击按钮时执行函数。</p>
+<button id="myBtn">点我</button>
+<script>
+document.getElementById("myBtn").addEventListener("click", myFunction);
+function myFunction() {
+    alert ("Hello World!");
+}
+</script>
+```
+##### 向同一个元素中添加多个事件句柄
+```
+addEventListener() 方法允许向同一个元素添加多个事件，且不会覆盖已存在的事件：
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<p>该实例使用 addEventListener() 方法向同个按钮中添加两个点击事件。</p>
+<button id="myBtn">点我</button>
+<script>
+var x = document.getElementById("myBtn");
+x.addEventListener("click", myFunction);
+x.addEventListener("click", someOtherFunction);
+function myFunction() {
+    alert ("Hello World!")
+}
+function someOtherFunction() {
+    alert ("函数已执行!")
+}
+</script>
+
+</body>
+</html>
+-----------------------------------------------------------------------
+
+向同个元素添加不同类型的事件：
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<p>实例使用 addEventListener() 方法在同一个按钮中添加多个事件。</p>
+<button id="myBtn">点我</button>
+<p id="demo"></p>
+<script>
+var x = document.getElementById("myBtn");
+x.addEventListener("mouseover", myFunction);
+x.addEventListener("click", mySecondFunction);
+x.addEventListener("mouseout", myThirdFunction);
+function myFunction() {
+    document.getElementById("demo").innerHTML += "Moused over!<br>"
+}
+function mySecondFunction() {
+    document.getElementById("demo").innerHTML += "Clicked!<br>"
+}
+function myThirdFunction() {
+    document.getElementById("demo").innerHTML += "Moused out!<br>"
+}
+</script>
+
+</body>
+</html>
+```
+##### 向 Window 对象添加事件句柄
+```
+重置窗口时添加事件：
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<p>实例在 window 对象中使用 addEventListener() 方法。</p>
+<p>尝试重置浏览器的窗口触发 "resize" 事件句柄。</p>
+<p id="demo"></p>
+<script>
+window.addEventListener("resize", function(){
+    document.getElementById("demo").innerHTML = Math.random();
+});
+</script>
+
+</body>
+</html>
+--------------------------------------------------------------
+
+当传递参数值时，使用"匿名函数"调用带参数的函数：
+<p>实例演示了在使用 addEventListener() 方法时如何传递参数。</p>
+<p>点击按钮执行计算。</p>
+<button id="myBtn">点我</button>
+<p id="demo"></p>
+<script>
+var p1 = 5;
+var p2 = 7;
+document.getElementById("myBtn").addEventListener("click", function() {
+    myFunction(p1, p2);
+});
+function myFunction(a, b) {
+    var result = a * b;
+    document.getElementById("demo").innerHTML = result;
+}
+</script>
+无参数时调用可以直接用函数名(不需要带括号)
+```
+#### removeEventListener() 方法
+```
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<head>
+<style>
+#myDIV {
+    background-color: coral;
+    border: 1px solid;
+    padding: 50px;
+    color: white;
+}
+</style>
+</head>
+<body>
+
+<div id="myDIV"> div 元素添加了 onmousemove 事件句柄，鼠标在桔红色的框内移动时会显示随机数。
+  <p>点击按钮移除 DIV 的事件句柄。</p>
+  <button onclick="removeHandler()" id="myBtn">点我</button>
+</div>
+<p id="demo"></p>
+<script>
+document.getElementById("myDIV").addEventListener("mousemove", myFunction);
+function myFunction() {
+    document.getElementById("demo").innerHTML = Math.random();
+}
+function removeHandler() {
+    document.getElementById("myDIV").removeEventListener("mousemove", myFunction);
+}
+</script>
+
+</body>
+</html>
+```
+### 事件冒泡/捕获
+```
+在 冒泡 中，内部元素的事件会先被触发，然后再触发外部元素，
+即： <p> 元素的点击事件先触发，然后会触发 <div> 元素的点击事件。
+
+在 捕获 中，外部元素的事件会先被触发，然后才会触发内部元素的事件，
+即： <div> 元素的点击事件先触发 ，然后再触发 <p> 元素的点击事件。
+
+可以用True/False指定
+默认False-冒泡
+```
+## DOM元素
+### appendChild()
+```
+要创建新的 HTML 元素 (节点)需要先创建一个元素，然后在已存在的元素中添加它，
+添加到尾部：
+<div id="div1">
+<p id="p1">这是一个段落。</p>
+<p id="p2">这是另外一个段落。</p>
+</div>
+ 
+<script>
+var para = document.createElement("p");
+var node = document.createTextNode("这是一个新的段落。");
+para.appendChild(node);
+ 
+var element = document.getElementById("div1");
+element.appendChild(para);
+</script>
+```
+### insertBefore()
+```
+将新元素添加到开始位置：
+<div id="div1">
+<p id="p1">这是一个段落。</p>
+<p id="p2">这是另外一个段落。</p>
+</div>
+ 
+<script>
+var para = document.createElement("p");
+var node = document.createTextNode("这是一个新的段落。");
+para.appendChild(node);
+ 
+var element = document.getElementById("div1");
+var child = document.getElementById("p1");
+element.insertBefore(para, child);
+</script>
+
+insertBefore(要插入的节点，参考的节点)
+```
+### removeChild()
+```
+要移除一个元素，需要知道该元素的父元素:
+
+<div id="div1">
+<p id="p1">这是一个段落。</p>
+<p id="p2">这是另外一个段落。</p>
+</div>
+ 
+<script>
+var parent = document.getElementById("div1");
+var child = document.getElementById("p1");
+parent.removeChild(child);
+</script>
+```
+### replaceChild()
+```
+<div id="div1">
+<p id="p1">这是一个段落。</p>
+<p id="p2">这是另外一个段落。</p>
+</div>
+ 
+<script>
+var para = document.createElement("p");
+var node = document.createTextNode("这是一个新的段落。");
+para.appendChild(node);
+ 
+var parent = document.getElementById("div1");
+var child = document.getElementById("p1");
+parent.replaceChild(para, child);
+</script>
+
+replaceChild(替换的节点，要替换的节点)
+```
+## DOM Collection/NodeList
+### DOM Collection
+```
+getElementsByTagName() 方法返回 HTMLCollection 对象,
+HTMLCollection 对象类似包含 HTML 元素的一个数组.
+
+<h2>JavaScript HTML DOM</h2>
+<p>Hello World!</p>
+<p>Hello Runoob!</p>
+<p id="demo"></p>
+
+<script>
+var myCollection = document.getElementsByTagName("p");
+document.getElementById("demo").innerHTML = "第二个段落的内容为:<span style='color:red;'> " + myCollection[1].innerHTML + '</span>';
+</script>
+
+Length属性.
+
+HTMLCollection 不是一个数组,可以像数组一样使用索引来获取元素，但无法使用数组的方法。
+```
+### NodeList
+```
+NodeList 对象是一个从文档中获取的节点列表 (集合) .
+
+Length属性.
+
+通过querySelectorAll获取列表中所有元素
+var myNodelist = document.querySelectorAll("p");
+var i;
+for (i = 0; i < myNodelist.length; i++) {
+    myNodelist[i].style.backgroundColor = "red";
+}
+
+NodeList也不是一个数组.
+```
+### HTML Collection 和 NodeList 区别
+```
+1.HTMLCollection 是 HTML 元素的集合,NodeList 是一个文档节点的集合;
+2.HTMLCollection 元素可以通过 name，id 或索引来获取,NodeList 只能通过索引来获取;
+3.只有 NodeList 对象有包含属性节点和文本节点.
+```
 # 事件
 ## HTML 事件
 ```
@@ -1040,15 +1570,281 @@ Email: <input type="text" name="email">
 </body>
 </html>
 ```
+## 验证API
+### checkValidity()
+```
+如果 input 元素中的数据是合法的返回 true，否则返回 false:
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+
+<p>输入数字并点击验证按钮:</p>
+
+<input id="id1" type="number" min="100" max="300" required>
+<button onclick="myFunction()">验证</button>
+
+<p>如果输入的数字小于 100 或大于300，会提示错误信息。</p>
+
+<p id="demo"></p>
+
+<script>
+function myFunction() {
+    var inpObj = document.getElementById("id1");
+    if (inpObj.checkValidity() == false) {
+        document.getElementById("demo").innerHTML = inpObj.validationMessage;
+    } else {
+        document.getElementById("demo").innerHTML = "输入正确";
+    }
+}
+
+//validationMessage	浏览器错误提示信息
+//willValidate	指定 input 是否需要验证
+</script>
+
+</body>
+</html>
+```
+### Validity属性
+属性 | 描述
+----- |-----
+customError	|设置为 true, 如果设置了自定义的 validity 信息。
+patternMismatch|	设置为 true, 如果元素的值不匹配它的模式属性。
+rangeOverflow	|设置为 true, 如果元素的值大于设置的最大值。
+rangeUnderflow	|设置为 true, 如果元素的值小于它的最小值。
+stepMismatch	|设置为 true, 如果元素的值不是按照规定的 step 属性设置。
+tooLong	|设置为 true, 如果元素的值超过了 maxLength 属性设置的长度。
+typeMismatch|	设置为 true, 如果元素的值不是预期相匹配的类型。
+valueMissing|	设置为 true，如果元素 (required 属性) 没有值。
+valid|	设置为 true，如果元素的值是合法的。
+#### 实例
+```
+<input id="id1" type="number" min="100" required>
+<button onclick="myFunction()">OK</button>
+ 
+<p id="demo"></p>
+ 
+<script>
+function myFunction() {
+    var txt = "";
+    var inpObj = document.getElementById("id1");
+    if(!isNumeric(inpObj.value)) {
+        txt = "你输入的不是数字";
+    } else if (inpObj.validity.rangeUnderflow) {
+        txt = "输入的值太小了";
+    } else {
+        txt = "输入正确";
+    }
+    document.getElementById("demo").innerHTML = txt;
+}
+ 
+// 判断输入是否为数字
+function isNumeric(n) {
+    return !isNaN(parseFloat(n)) && isFinite(n);
+}
+</script>
+```
+# JavaScript this关键字
+## 释义
+```
+面向对象语言中 this 表示当前对象的一个引用;
+但在 JavaScript 中 this 不是固定不变的，它会随着执行环境的改变而改变:
+
+1.在方法中，this 表示该方法所属的对象;
+2.如果单独使用，this 表示全局对象;
+3.在函数中，this 表示全局对象;
+4.在函数中，在严格模式下，this 是未定义的(undefined);
+5.在事件中，this 表示接收事件的元素;
+6.类似 call() 和 apply() 方法可以将 this 引用到任何对象.
+```
+## 对象方法中绑定
+```
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+
+<h2>JavaScript <b>this</b> 关键字</h2>
+
+<p>在实例中，<b>this</b> 指向了 fullName 方法所属的对象 person。</p>
+
+<p id="demo"></p>
+
+<script>
+// 创建一个对象
+var person = {
+  firstName  : "John",
+  lastName   : "Doe",
+  id     : 5566,
+  myFunction : function() {
+    return this;
+  }
+};
+
+// 显示表单数据
+document.getElementById("demo").innerHTML = person.myFunction();
+</script>
+
+</body>
+</html>
+```
+## 显示函数绑定(apply/call)
+```
+在 JavaScript 中函数也是对象，对象则有方法;
+apply 和 call 就是函数对象的方法,他们允许切换函数执行的上下文环境（context），
+即 this 绑定的对象.
+
+如下，当使用 person2 作为参数来调用 person1.fullName 方法时, 
+this 将指向 person2, 即便它是 person1 的方法：
+
+<h2>JavaScript this 关键字</h2>
+<p>实例中 <strong>this</strong> 指向了 person2，即便它是 person1 的方法:</p>
+<p id="demo"></p>
+
+<script>
+var person1 = {
+  fullName: function() {
+    return this.firstName + " " + this.lastName;
+  }
+}
+var person2 = {
+  firstName:"John",
+  lastName: "Doe",
+}
+var x = person1.fullName.call(person2); 
+document.getElementById("demo").innerHTML = x; 
+</script>
+```
+# JavaScript:void(0)
+## 语法格式
+`
+void 要计算一个表达式但是不返回值
+`
+```
+void func()
+javascript:void func()
+```
+`或者`
+```
+void(func())
+javascript:void(func())
+```
+## 实例
+```
+以下实例中参数a将返回undefined：
+
+<script type="text/javascript">
+function getValue(){
+   var a,b,c;
+   a = void ( b = 5, c = 7 );
+   document.write('a = ' + a + ' b = ' + b +' c = ' + c );
+}
+</script>
+</head>
+<body>
+	
+<p>点击以下按钮查看结果：</p>
+<form>
+<input type="button" value="点我" onclick="getValue();" />
+</form>
+```
+## href="#"与href="javascript:void(0)"的区别
+### 区别
+```
+1.# 包含了一个位置信息，默认的锚是#top 也就是网页的上端,
+而javascript:void(0), 仅仅表示一个死链接;
+
+2.在页面很长的时候会使用 # 来定位页面的具体位置，格式为：# + id。
+如果要定义一个死链接使用 javascript:void(0) 
+```
+### 实例
+```
+<a href="javascript:void(0);">点我没有反应的!</a>
+<a href="#pos">点我定位到指定位置!</a>
+<br>
+...
+<br>
+<p id="pos">尾部定位点</p>
+```
+# JSON
+## 简介
+```
+JavaScript Object Notation
+
+一种轻量级的数据交换格式；独立的语言 ；易于理解，
+用于存储和传输数据的格式；用于服务端向网页传递数据。
+
+JSON 格式在语法上与创建 JavaScript 对象代码是相同的，
+由于它们很相似，所以 JavaScript 程序可以很容易的将 JSON 数据转换为 JavaScript 对象。
+```
+### Json实例
+```
+以下 JSON 语法定义了 sites 对象: 3 条网站信息（对象）的数组:
+{"sites":[
+    {"name":"Runoob", "url":"www.runoob.com"}, 
+    {"name":"Google", "url":"www.google.com"},
+    {"name":"Taobao", "url":"www.taobao.com"}
+]}
+```
+## 语法
+```
+数据为 键/值对
+数据由逗号分隔
+大括号保存对象
+方括号保存数组
+
+JSON 对象保存在大括号内,
+对象可以保存多个 键/值对
+```
+### Json字符串→JavaScript对象
+```
+通常我们从服务器中读取 JSON 数据，并在网页中显示数据.
+var text = '{ "sites" : [' +
+'{ "name":"Runoob" , "url":"www.runoob.com" },' +
+'{ "name":"Google" , "url":"www.google.com" },' +
+'{ "name":"Taobao" , "url":"www.taobao.com" } ]}';
+
+var obj = JSON.parse(text);
+```
+### 转换实例
+```
+<h2>为 JSON 字符串创建对象</h2>
+<p id="demo"></p>
+<script>
+var text = '{ "sites" : [' +
+	'{ "name":"Runoob" , "url":"www.runoob.com" },' +
+	'{ "name":"Google" , "url":"www.google.com" },' +
+	'{ "name":"Taobao" , "url":"www.taobao.com" } ]}';
+	
+obj = JSON.parse(text);
+document.getElementById("demo").innerHTML = obj.sites[1].name + " " + obj.sites[1].url;
+</script>
+```
+### 相关函数
+#### JSON.parse()
+`
+用于将一个 JSON 字符串转换为 JavaScript 对象
+`
+#### JSON.stringify()
+`
+用于将 JavaScript 值转换为 JSON 字符串
+`
 # iframe/AJAX
 ```
 
 ```
-# JSON
-```
-
-```
+# Promise
 # JQuery
+## JavaScript框架
+```
+JavaScript（特别是对浏览器差异的复杂处理），通常很困难也很耗时。
+为了应对这些调整，许多的 JavaScript (helper) 库应运而生。
+```
 # JavaScript实例
 ## 实例一：
 ```
