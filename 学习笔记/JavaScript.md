@@ -1840,10 +1840,683 @@ document.getElementById("demo").innerHTML = obj.sites[1].name + " " + obj.sites[
 ```
 # Promise
 # JQuery
-## JavaScript框架
+## 简介
+### JavaScript框架
 ```
 JavaScript（特别是对浏览器差异的复杂处理），通常很困难也很耗时。
 为了应对这些调整，许多的 JavaScript (helper) 库应运而生。
+```
+### JQuery
+```
+JQuery 功能：
+HTML 元素选取
+HTML 元素操作
+CSS 操作
+HTML 事件函数
+JavaScript 特效和动画
+HTML DOM 遍历和修改
+AJAX
+Utilities
+
+下载方式：
+从 jquery.com/http://www.jq22.com/jquery-info122 下载 jQuery 库;
+从 CDN(内容分发网络) 中载入 jQuery, 如从 Google 中加载 jQuery.
+
+版本：
+Production version - 用于实际的网站中，已被精简和压缩
+Development version - 用于测试和开发（未压缩，是可读的代码）
+
+JS引用：
+<head>
+<script src="jquery-1.10.2.min.js"></script>
+</head>
+
+替代方案：
+如果您不希望下载并存放 jQuery，那么也可以通过 CDN（内容分发网络） 引用它，
+Staticfile CDN、百度、又拍云、新浪、谷歌和微软的服务器都存有 jQuery ：
+
+百度 CDN
+<head>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+</script>
+</head>
+
+Google CDN
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+</script>
+</head>
+
+$.fn.jquery 查看当前JQuery版本
+
+下载好，拖入到JS文件夹下面;
+检测JQuery是否安装成功：
+
+1.引用jQuery 资源文件：
+<script src="../js/jquery-3.5.1.min.js"></script>
+<title>JQuery 练习</title>
+
+2.测试JQuery 是否加载，如果是undefined就是没引入：
+<script>
+           if(typeof jQuery== "undefined"){
+
+              window.alert("jQuery引用失败!");
+
+           }else{
+
+              window.alert("jQuery引用成功!");
+
+           }
+</script>
+```
+## 语法
+```
+jQuery 语法是通过选取 HTML 元素，并对选取的元素执行某些操作
+
+$(selector).action()
+1.美元符号定义 jQuery
+2.选择符（selector）"查询"和"查找" HTML 元素
+3.jQuery 的 action() 执行对元素的操作
+
+实例：
+$(this).hide() - 隐藏当前元素
+$("p").hide() - 隐藏所有 <p> 元素
+$("p.test").hide() - 隐藏所有 class="test" 的 <p> 元素
+$("#test").hide() - 隐藏 id="test" 的元素
+
+文档就绪事件：
+$(document).ready(function(){
+ 
+   // 开始写 jQuery 代码...
+ 
+});
+以上写法等同于；
+$(function(){
+ 
+   // 开始写 jQuery 代码...
+ 
+});
+为了防止文档在完全加载（就绪）之前运行 jQuery 代码，即在 DOM 加载完成后才可以对 DOM 进行操作；
+如果在文档没有完全加载之前就运行函数，操作可能失败：
+1.试图隐藏一个不存在的元素
+2.获得未完全加载的图像的大小
+```
+## 选择器
+```
+jQuery 选择器允许对 HTML 元素组或单个元素进行操作;
+所有选择器都以美元符号开头：$()
+```
+### 元素选择器
+```
+$("p")
+
+实例(点击按钮后，p元素隐藏)：
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("p").hide();
+  });
+});
+</script>
+```
+### Id选择器
+```
+$("#test")
+
+页面中元素的 id 应该是唯一的，所以要在页面中选取唯一的元素需要通过 #id 选择器.
+实例：
+$(document).ready(function(){
+  $("button").click(function(){
+    $("#test").hide();
+  });
+});
+```
+### .class选择器
+```
+$(".test")
+
+实例：
+$(document).ready(function(){
+  $("button").click(function(){
+    $(".test").hide();
+  });
+});
+```
+### 其他
+语法|描述
+-----|-----
+$("*")	|选取所有元素	
+$(this)	|选取当前 HTML 元素
+$("p.intro")|	选取 class 为 intro 的 <p> 元素	
+$("p:first")|	选取第一个 <p> 元素
+$("ul li:first") |选取第一个 \<ul> 元素的第一个 \<li> 元素
+$("ul li:first-child")|	选取每个 \<ul> 元素的第一个 \<li> 元素
+$("[href]")	|选取带有 href 属性的元素
+$("a[target='_blank']")	|选取所有 target 属性值等于 "_blank" 的 \<a> 元素	
+$("a[target!='_blank']")	|选取所有 target 属性值不等于 "_blank" 的 \<a> 元素
+$(":button")	|选取所有 type="button" 的 \<input> 元素 和 \<button> 元素
+$("tr:even")|	选取偶数位置的 <tr> 元素
+$("tr:odd")	|选取奇数位置的 <tr> 元素
+---
+### 独立文件使用JQuery函数
+```
+如果您的网站包含许多页面，并且希望jQuery函数易于维护，
+那么把jQuery函数放到独立的.js文件中.
+
+实例：
+<head>
+<script src="http://cdn.static.runoob.com/libs/jquery/1.10.2/jquery.min.js">
+</script>
+<script src="my_jquery_functions.js"></script>
+</head>
+```
+## JQuery事件
+### 常见DOM事件
+鼠标事件|键盘事件|表单事件|文档/窗口事件
+----|----|----|----
+click	|keypress	|submit	|load
+dblclick	|keydown	|change	|resize
+mouseenter|	keyup	|focus|	scroll
+mouseleave	 |	blur	|unload 
+hover ||
+### 事件方法语法
+```
+指定点击事件：
+$("p").click();
+
+定义点击后触发事件，可以通过函数实现：
+$("p").click(function(){
+    // 动作触发后执行的代码!!
+});
+``` 
+### 常用JQuery事件方法
+#### $(document).ready()
+```
+$(document).ready() 方法允许我们在文档完全加载完后执行函数
+```
+#### click()
+```
+$("p").click(function(){
+  $(this).hide();
+});
+```
+#### dblclick()
+```
+双击触发：
+$("p").dblclick(function(){
+  $(this).hide();
+});
+```
+#### mouseenter()
+```
+鼠标指针穿过元素触发：
+$("#p1").mouseenter(function(){
+    alert('您的鼠标移到了 id="p1" 的元素上!');
+});
+```
+#### mouseleave()
+```
+离开元素触发：
+$("#p1").mouseleave(function(){
+    alert("再见，您的鼠标离开了该段落。");
+});
+```
+#### mousedown()
+```
+当鼠标指针移动到元素上方，并按下鼠标按键时触发：
+$("#p1").mousedown(function(){
+    alert("鼠标在该段落上按下！");
+});
+```
+#### mouseup()
+```
+当在元素上松开鼠标按钮时触发：
+$("#p1").mouseup(function(){
+    alert("鼠标在段落上松开。");
+});
+```
+#### hover()
+```
+用于模拟光标悬停事件
+当鼠标移动到元素上时，
+会触发指定的第一个函数(mouseenter);
+当鼠标移出这个元素时，
+会触发指定的第二个函数(mouseleave).
+$("#p1").hover(
+    function(){
+        alert("你进入了 p1!");
+    },
+    function(){
+        alert("拜拜! 现在你离开了 p1!");
+    }
+);
+```
+#### focus()
+```
+当元素获得焦点时触发：
+当通过鼠标点击选中元素或通过 tab 键定位到元素时，该元素就会获得焦点
+
+$(document).ready(function(){
+  $("input").focus(function(){
+    $(this).css("background-color","#cccccc");
+  });
+});
+```
+#### blur()
+```
+当元素失去焦点时，发生 blur 事件
+$("input").blur(function(){
+    $(this).css("background-color","#ffffff");
+  });
+```
+## JQuery 效果
+### 隐藏/显示
+#### jQuery hide() 和 show()
+```
+$("#hide").click(function(){
+  $("p").hide();
+});
+ 
+$("#show").click(function(){
+  $("p").show();
+});
+
+带speed参数(表示过渡使用哪种缓动函数)：
+linear:每一步的距离和前一步都是相同的，也就是等速
+swing:速度会加快然后最后一点距离再减速
+(没有指定默认用swing)
+
+$(document).ready(function(){
+  $(".hidebtn").click(function(){
+    $("div").hide(1000,"linear",function(){
+      alert("Hide() 方法已完成!");
+    });
+  });
+});
+```
+#### toggle()
+```
+使用 toggle() 方法来切换 hide() 和 show() 方法
+$(selector).toggle(speed,callback);
+```
+### 淡入/淡出
+#### fadeIn()
+```
+用于淡入已隐藏的元素
+$(selector).fadeIn(speed,callback);
+
+$("button").click(function(){
+  $("#div1").fadeIn();
+  $("#div2").fadeIn("slow");
+  $("#div3").fadeIn(3000);
+});
+```
+#### fadeOut()
+```
+用于淡出可见元素
+$(selector).fadeOut(speed,callback);
+
+$("button").click(function(){
+  $("#div1").fadeOut();
+  $("#div2").fadeOut("slow");
+  $("#div3").fadeOut(3000);
+});
+```
+#### fadeToggle()
+```
+可以在 fadeIn() 与 fadeOut() 方法之间进行切换
+
+$("button").click(function(){
+  $("#div1").fadeToggle();
+  $("#div2").fadeToggle("slow");
+  $("#div3").fadeToggle(3000);
+});
+```
+#### fadeTo()
+```
+允许渐变为给定的不透明度（值介于 0 与 1 之间）
+
+$("button").click(function(){
+  $("#div1").fadeTo("slow",0.15);
+  $("#div2").fadeTo("slow",0.4);
+  $("#div3").fadeTo("slow",0.7);
+});
+
+fadeTo()  没有默认参数，必须加上  slow/fast/Time
+```
+### 滑动
+#### slideDown()
+```
+用于向下滑动元素
+$(selector).slideDown(speed,callback);
+
+实例：
+<script> 
+$(document).ready(function(){
+  $("#flip").click(function(){
+    $("#panel").slideDown("slow");
+  });
+});
+</script>
+ 
+<style type="text/css"> 
+#panel,#flip
+{
+	padding:5px;
+	text-align:center;
+	background-color:#e5eecc;
+	border:solid 1px #c3c3c3;
+}
+#panel
+{
+	padding:50px;
+	display:none;
+}
+</style>
+</head>
+<body>
+ 
+<div id="flip">点我滑下面板</div>
+<div id="panel">Hello world!</div>
+
+</body>
+```
+#### slideUp()
+```
+用于向上滑动元素
+$(selector).slideUp(speed,callback);
+
+实例：
+<script> 
+$(document).ready(function(){
+  $("#flip").click(function(){
+    $("#panel").slideUp("slow");
+  });
+});
+</script>
+ 
+<style type="text/css"> 
+#panel,#flip
+{
+	padding:5px;
+	text-align:center;
+	background-color:#e5eecc;
+	border:solid 1px #c3c3c3;
+}
+#panel
+{
+	padding:50px;
+}
+</style>
+</head>
+<body>
+ 
+<div id="flip">点我拉起面板</div>
+<div id="panel">Hello world!</div>
+
+</body>
+```
+#### slideToggle()
+```
+可以在 slideDown() 与 slideUp() 方法之间进行切换
+
+实例：
+<script> 
+$(document).ready(function(){
+  $("#flip").click(function(){
+    $("#panel").slideToggle("slow");
+  });
+});
+</script>
+ 
+<style type="text/css"> 
+#panel,#flip
+{
+	padding:5px;
+	text-align:center;
+	background-color:#e5eecc;
+	border:solid 1px #c3c3c3;
+}
+#panel
+{
+	padding:50px;
+	display:none;
+}
+</style>
+</head>
+<body>
+ 
+<div id="flip">点我，显示或隐藏面板。</div>
+<div id="panel">Hello world!</div>
+
+</body>
+```
+### 动画
+#### animate()
+```
+用于创建自定义动画
+
+$(selector).animate({params},speed,callback)
+1.必需的 params 参数定义形成动画的 CSS 属性
+2.可选的 speed 参数规定效果的时长。它可以取以下值："slow"、"fast" 或毫秒
+3.可选的 callback 参数是动画完成后所执行的函数名称
+
+实例：
+<script> 
+$(document).ready(function(){
+  $("button").click(function(){
+    $("div").animate({left:'250px'});
+  });
+});
+</script> 
+</head>
+ 
+<body>
+<button>开始动画</button>
+<p>默认情况下，所有的 HTML 元素有一个静态的位置，且是不可移动的。 
+如果需要改变为，我们需要将元素的 position 属性设置为 relative, fixed, 或 absolute!</p>
+<div style="background:#98bf21;height:100px;width:100px;position:absolute;">
+</div>
+
+</body>
+```
+#### animate() - 操作多个属性
+```
+生成动画时可以使用多个属性
+
+实例：
+<script> 
+$(document).ready(function(){
+  $("button").click(function(){
+    $("div").animate({
+      left:'250px',
+      opacity:'0.5',
+      height:'150px',
+      width:'150px'
+    });
+  });
+});
+</script> 
+</head>
+ 
+<body>
+<button>开始动画</button>
+<p>默认情况下，所有的 HTML 元素有一个静态的位置，且是不可移动的。 
+如果需要改变，我们需要将元素的 position 属性设置为 relative, fixed, 或 absolute!</p>
+<div style="background:#98bf21;height:100px;width:100px;position:absolute;">
+</div>
+
+</body>
+```
+#### animate() - 使用相对值
+```
+可以定义相对值（该值相对于元素的当前值）。需要在值的前面加上 += 或 -=：
+
+实例：
+$("button").click(function(){
+  $("div").animate({
+    left:'250px',
+    height:'+=150px',
+    width:'+=150px'
+  });
+});
+```
+#### animate() - 使用预定义的值
+```
+可以把属性的动画值设置为 "show"、"hide" 或 "toggle"
+
+实例：
+$("button").click(function(){
+  $("div").animate({
+    height:'toggle'
+  });
+});
+```
+#### animate() - 使用队列功能
+```
+编写多个 animate() 调用,然后逐一运行.
+
+实例一：
+$("button").click(function(){
+  var div=$("div");
+  div.animate({height:'300px',opacity:'0.4'},"slow");
+  div.animate({width:'300px',opacity:'0.8'},"slow");
+  div.animate({height:'100px',opacity:'0.4'},"slow");
+  div.animate({width:'100px',opacity:'0.8'},"slow");
+});
+
+实例二：
+$(document).ready(function(){
+  $("button").click(function(){
+    var div=$("div");  
+    div.animate({left:'100px'},"slow");
+    div.animate({fontSize:'3em'},"slow");
+  });
+});
+```
+### 停止动画
+#### stop()
+```
+用于停止动画或效果，在它们完成之前
+$(selector).stop(stopAll,goToEnd);
+
+1.可选的 stopAll 参数规定是否应该清除动画队列,默认是 false,
+即仅停止活动的动画，允许任何排入队列的动画向后执行;
+2.可选的 goToEnd 参数规定是否立即完成当前动画。默认是 false;
+3.因此，默认地，stop() 会清除在被选元素上指定的当前动画.
+
+实例：
+<script> 
+$(document).ready(function(){
+  $("#flip").click(function(){
+    $("#panel").slideDown(5000);
+  });
+  $("#stop").click(function(){
+    $("#panel").stop();
+  });
+});
+</script>
+ 
+<style type="text/css"> 
+#panel,#flip
+{
+	padding:5px;
+	text-align:center;
+	background-color:#e5eecc;
+	border:solid 1px #c3c3c3;
+}
+#panel
+{
+	padding:50px;
+	display:none;
+}
+</style>
+</head>
+<body>
+ 
+<button id="stop">停止滑动</button>
+<div id="flip">点我向下滑动面板</div>
+<div id="panel">Hello world!</div>
+
+</body>
+```
+### Callback方法
+```
+Callback 函数在当前动画 100% 完成之后执行
+
+有回调函数：
+$("button").click(function(){
+  $("p").hide("slow",function(){
+    alert("段落现在被隐藏了");
+  });
+});
+
+无回调函数：
+$("button").click(function(){
+  $("p").hide(1000);
+  alert("段落现在被隐藏了");
+});
+```
+### 链(Chaining)
+```
+Chaining 允许我们在一条语句中运行多个 jQuery 方法（在相同的元素上）
+
+$("#p1").css("color","red").slideUp(2000).slideDown(2000);
+Or
+$("#p1").css("color","red")
+  .slideUp(2000)
+  .slideDown(2000);
+```
+### 注意点
+```
+当使用 animate() 时，必须使用 Camel 标记法书写所有的属性名
+例.必须使用 paddingLeft 而不是 padding-left
+```
+### 动画完整实例
+```
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+</script>
+<script> 
+$(document).ready(function(){
+  $("#start").click(function(){
+    $("div").animate({left:'100px'},5000);
+    $("div").animate({fontSize:'3em'},5000);
+  });
+  
+  $("#stop").click(function(){
+    $("div").stop();
+  });
+
+  $("#stop2").click(function(){
+    $("div").stop(true);
+  });
+
+  $("#stop3").click(function(){
+    $("div").stop(true,true);
+  });
+  
+});
+</script> 
+</head>
+<body>
+
+<button id="start">开始</button>
+<button id="stop">停止</button>
+<button id="stop2">停止所有</button>
+<button id="stop3">停止动画，但完成动作</button>
+<p>点击 "开始" 按钮开始动画。</p>
+<p>点击 "停止" 按钮停止当前激活的动画，但之后我们能再动画队列中再次激活。</p>
+<p>点击 "停止所有" 按钮停止当前动画，并清除动画队列，所以元素的所有动画都会停止。</p>
+<p>点击 "停止动画，但完成动作" 快速完成动作，并停止它。</p> 
+
+<div style="background:#98bf21;height:100px;200px;position:absolute;">HELLO</div>
+
+</body>
+</html>
 ```
 # JavaScript实例
 ## 实例一：
