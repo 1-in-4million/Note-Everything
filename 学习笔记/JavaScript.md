@@ -2518,6 +2518,538 @@ $(document).ready(function(){
 </body>
 </html>
 ```
+## JQuery HTML
+### JQuery 捕获
+#### 获得内容 - text()、html() 以及 val()
+```
+text() - 设置或返回所选元素的文本内容
+html() - 设置或返回所选元素的内容（包括 HTML 标记）
+val() - 设置或返回表单字段的值
+---------------------------------------------------------
+text()/html()
+<script>
+$(document).ready(function(){
+  $("#btn1").click(function(){
+    alert("Text: " + $("#test").text());
+  });
+  $("#btn2").click(function(){
+    alert("HTML: " + $("#test").html());
+  });
+});
+</script>
+</head>
+
+<body>
+<p id="test">这是段落中的 <b>粗体</b> 文本。</p>
+<button id="btn1">显示文本</button>
+<button id="btn2">显示 HTML</button>
+</body>
+---------------------------------------------------------
+val()
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    alert("值为: " + $("#test").val());
+  });
+});
+</script>
+</head>
+
+<body>
+<p>名称: <input type="text" id="test" value="菜鸟教程"></p>
+<button>显示值</button>
+```
+#### 获取属性 - attr()
+```
+用于获取属性值
+
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    alert($("#runoob").attr("href"));
+  });
+});
+</script>
+</head>
+
+<body>
+<p><a href="//www.runoob.com" id="runoob">菜鸟教程</a></p>
+<button>显示 href 属性的值</button>
+```
+### JQuery 设置
+#### 设置内容 - text()、html() 以及 val()
+```
+<script>
+$(document).ready(function(){
+  $("#btn1").click(function(){
+    $("#test1").text("Hello world!");
+  });
+  $("#btn2").click(function(){
+    $("#test2").html("<b>Hello world!</b>");
+  });
+  $("#btn3").click(function(){
+    $("#test3").val("RUNOOB");
+  });
+});
+</script>
+</head>
+
+<body>
+<p id="test1">这是一个段落。</p>
+<p id="test2">这是另外一个段落。</p>
+<p>输入框: <input type="text" id="test3" value="菜鸟教程"></p>
+<button id="btn1">设置文本</button>
+<button id="btn2">设置 HTML</button>
+<button id="btn3">设置值</button>
+</body>
+```
+#### text()、html() 以及 val() 的回调函数
+```
+回调函数有两个参数：被选元素列表中当前元素的下标，以及原始（旧的）值,
+然后以函数新值返回希望使用的字符串。
+
+$("#btn1").click(function(){
+    $("#test1").text(function(i,origText){
+        return "旧文本: " + origText + " 新文本: Hello world! (index: " + i + ")"; 
+    });
+});
+```
+#### 设置属性 - attr()
+```
+改变链接中href属性的值：
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("#runoob").attr("href","http://www.runoob.com/jquery");
+  });
+});
+</script>
+</head>
+
+<body>
+<p><a href="//www.runoob.com" id="runoob">菜鸟教程</a></p>
+<button>修改 href 值</button>
+<p>点击按钮修改后，可以点击链接查看链接地址是否变化。</p>
+
+attr() 方法也允许您同时设置多个属性：
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("#runoob").attr({
+      "href" : "http://www.runoob.com/jquery",
+      "title" : "jQuery 教程"
+    });
+	// 通过修改的 title 值来修改链接名称
+	title =  $("#runoob").attr('title');
+	$("#runoob").html(title);
+  });
+});
+</script>
+</head>
+
+<body>
+<p><a href="//www.runoob.com" id="runoob">菜鸟教程</a></p>
+<button>修改 href 和 title</button>
+<p>点击按钮修改后，可以查看 href 和 title 是否变化。</p>
+</body>
+```
+#### attr() 的回调函数
+```
+调函数有两个参数：被选元素列表中当前元素的下标，以及原始（旧的）值,
+然后以函数新值返回您希望使用的字符串。
+
+<script>
+$(document).ready(function(){
+    $("button").click(function(){
+        $("#runoob").attr("href", function(i, origValue){
+            return origValue + "/jquery";
+        });
+    });
+});
+</script>
+</head>
+<body>
+
+<p><a href="//www.runoob.com" id="runoob">菜鸟教程</a></p>
+
+<button>修改 href 值</button>
+
+<p>点击按钮修改后，可以点击链接查看 href 属性是否变化。</p>
+
+</body>
+```
+### JQuery 添加元素
+#### append()/prepend()
+```
+append() 方法在被选元素的结尾插入内容（仍然在该元素的内部）
+<script>
+$(document).ready(function(){
+  $("#btn1").click(function(){
+    $("p").append(" <b>追加文本</b>。");
+  });
+
+  $("#btn2").click(function(){
+    $("ol").append("<li>追加列表项</li>");
+  });
+});
+</script>
+</head>
+
+<body>
+<p>这是一个段落。</p>
+<p>这是另外一个段落。</p>
+<ol>
+<li>List item 1</li>
+<li>List item 2</li>
+<li>List item 3</li>
+</ol>
+<button id="btn1">添加文本</button>
+<button id="btn2">添加列表项</button>
+</body>
+-----------------------------------------------------
+prepend() 方法在被选元素的开头插入内容
+<script>
+$(document).ready(function(){
+	$("#btn1").click(function(){
+		$("p").prepend("<b>在开头追加文本</b>。 ");
+	});
+	$("#btn2").click(function(){
+		$("ol").prepend("<li>在开头添加列表项</li>");
+	});
+});
+</script>
+</head>
+<body>
+	
+<p>这是一个段落。</p>
+<p>这是另外一个段落。</p>
+<ol>
+<li>列表 1</li>
+<li>列表 2</li>
+<li>列表 3</li>
+</ol>
+<button id="btn1">添加文本</button>
+<button id="btn2">添加列表项</button>
+	
+</body>
+```
+#### 通过 append() 和 prepend() 方法添加若干新元素
+```
+append() 和 prepend() 方法能够通过参数接收无限数量的新元素
+
+<script>
+function appendText(){
+	var txt1="<p>文本-1。</p>";              // 使用 HTML 标签创建文本
+	var txt2=$("<p></p>").text("文本-2。");  // 使用 jQuery 创建文本
+	var txt3=document.createElement("p");
+	txt3.innerHTML="文本-3。";               // 使用 DOM 创建文本 text with DOM
+	$("body").append(txt1,txt2,txt3);        // 追加新元素
+}
+</script>
+</head>
+<body>
+
+<p>这是一个段落。</p>
+<button onclick="appendText()">追加文本</button>
+
+</body>
+```
+#### after()/before()
+```
+在被选元素之后/之前插入(外部)
+<script>
+$(document).ready(function(){
+  $("#btn1").click(function(){
+    $("img").before("<b>之前</b>");
+  });
+
+  $("#btn2").click(function(){
+    $("img").after("<i>之后</i>");
+  });
+});
+</script>
+</head>
+
+<body>
+<img src="/images/logo.png" >
+<br><br>
+<button id="btn1">之前插入</button>
+<button id="btn2">之后插入</button>
+</body>
+```
+#### 通过 after() 和 before() 方法添加若干新元素
+```
+<script>
+function afterText(){
+	var txt1="<b>I </b>";                    // 使用 HTML 创建元素
+	var txt2=$("<i></i>").text("love ");     // 使用 jQuery 创建元素
+	var txt3=document.createElement("big");  // 使用 DOM 创建元素
+	txt3.innerHTML="jQuery!";
+	$("img").after(txt1,txt2,txt3);          // 在图片后添加文本
+}
+</script>
+</head>
+<body>
+
+<img src="/images/logo2.png" >
+<br><br>
+<button onclick="afterText()">之后插入</button>
+
+</body>
+```
+### JQuery 删除元素
+#### remove()/empty()
+```
+remove() - 删除被选元素（及其子元素）
+empty() - 从被选元素中删除子元素
+
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("#div1").empty();
+  });
+});
+</script>
+</head>
+<body>
+
+<div id="div1" style="height:100px;width:300px;border:1px solid black;background-color:yellow;">
+
+这是 div 中的一些文本。
+<p>这是在 div 中的一个段落。</p>
+<p>这是在 div 中的另外一个段落。</p>
+
+</div>
+<br>
+<button>清空div元素</button>
+
+</body>
+```
+#### 过滤被删除的元素
+```
+remove() 方法也可接受一个参数
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("p").remove(".italic");
+  });
+});
+</script>
+</head>
+<body>
+
+<p>这是一个段落。</p>
+<p class="italic"><i>这是另外一个段落。</i></p>
+<p class="italic"><i>这是另外一个段落。</i></p>
+<button>移除所有  class="italic" 的 p 元素。</button>
+
+</body>
+```
+### CSS类
+#### addClass()
+```
+向不同元素添加类，添加时可以选择多个元素：
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("h1,h2,p").addClass("blue");
+    $("div").addClass("important");
+  });
+});
+</script>
+<style type="text/css">
+.important
+{
+	font-weight:bold;
+	font-size:xx-large;
+}
+.blue
+{
+	color:blue;
+}
+</style>
+</head>
+<body>
+
+<h1>标题 1</h1>
+<h2>标题 2</h2>
+<p>这是一个段落。</p>
+<p>这是另外一个段落。</p>
+<div>这是一些重要的文本!</div>
+<br>
+<button>为元素添加 class</button>
+
+</body>
+------------------------------------
+可以规定多个类：
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("body div:first").addClass("important blue");
+  });
+});
+</script>
+<style type="text/css">
+.important
+{
+	font-weight:bold;
+	font-size:xx-large;
+}
+.blue
+{
+	color:blue;
+}
+</style>
+</head>
+<body>
+
+<div id="div1">这是一些文本。</div>
+<div id="div2">这是一些文本。</div>
+<br>
+<button>为第一个 div 元素添加类</button>
+
+</body>
+```
+#### removeClass()
+```
+从不同的元素中删除指定的class：
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("h1,h2,p").removeClass("blue");
+  });
+});
+</script>
+<style type="text/css">
+.important
+{
+	font-weight:bold;
+	font-size:xx-large;
+}
+.blue
+{
+	color:blue;
+}
+</style>
+</head>
+<body>
+
+<h1 class="blue">标题 1</h1>
+<h2 class="blue">标题 2</h2>
+<p class="blue">这是一个段落。</p>
+<p class="important">这是另外一个段落。</p>
+<br>
+<button>从元素中移除 class</button>
+</body>
+```
+#### toggleClass() 
+```
+对被选元素进行添加/删除类的切换操作：
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    $("h1,h2,p").toggleClass("blue");
+  });
+});
+</script>
+<style type="text/css">
+.blue
+{
+color:blue;
+}
+</style>
+</head>
+<body>
+
+<h1 class="blue">标题 1</h1>
+<h2 class="blue">标题 2</h2>
+<p class="blue">这是一个段落。</p>
+<p>这是另外一个段落。</p>
+<br>
+<button>切换 class</button>
+</body>
+```
+#### css()
+`
+设置或返回被选元素的一个或多个样式属性
+`
+##### 返回 CSS 属性
+```
+css("propertyname"):
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    alert("背景颜色 = " + $("p").css("background-color"));
+  });
+});
+</script>
+</head>
+
+<body>
+<h2>这是一个标题</h2>
+<p style="background-color:#ff0000">这是一个段落。</p>
+<p style="background-color:#00ff00">这是一个段落。</p>
+<p style="background-color:#0000ff">这是一个段落。</p>
+<button>返回第一个 p 元素的 background-color </button>
+</body>
+------------------------------------------------------
+上面只能返回第一个p元素，若想返回指定第几个，
+可以使用$("p").eq(N)    // N 是索引号，从 0 开始
+$(function() {
+    $("button").click(function() {
+       for(var i = 0; i < $("p").length; i++)
+        {
+            alert($("p").eq(i).css("background-color"));
+        }
+  });
+});
+```
+##### 设置 css 属性
+```
+css("propertyname","value");
+$("p").css("background-color","yellow");
+```
+##### 设置多个 CSS 属性
+```
+css({"propertyname":"value","propertyname":"value",...});
+$("p").css({"background-color":"yellow","font-size":"200%"});
+```
+### 尺寸方法
+```
+width()/height()
+innerWidth()/innerHeight()
+outerWidth()/outerHeight()
+
+示例：
+<script>
+$(document).ready(function(){
+  $("button").click(function(){
+    var txt="";
+    txt+="div 宽度: " + $("#div1").width() + "</br>";
+    txt+="div 高度: " + $("#div1").height() + "</br>";
+    txt+="div 宽度，包含内边距和边框: " + $("#div1").outerWidth() + "</br>";
+    txt+="div 高度，包含内边距和边框: " + $("#div1").outerHeight();
+    $("#div1").html(txt);
+  });
+});
+</script>
+</head>
+
+<body>
+<div id="div1" style="height:100px;width:300px;padding:10px;margin:3px;border:1px solid blue;background-color:lightblue;"></div>
+<br>
+
+<button>显示 div 元素的尺寸</button>
+<p>outerWidth() - 返回元素的宽度 (包含内边距和边框)。</p>
+<p>outerHeight() - 返回元素的高度 (包含内边距和边框)。</p>
+
+</body>
+```
+## JQuery 遍历
+### 遍历-祖先
+```
+
+```
 # JavaScript实例
 ## 实例一：
 ```
