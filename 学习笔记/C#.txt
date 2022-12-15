@@ -1,0 +1,2589 @@
+【C#和.NET框架】
+1. .NET框架组成
+CLR(Common Language Runtime)
+在运行时管理程序的执行，包括以下内容：
+	内存管理和垃圾收集；
+	代码安全验证；
+	代码执行、线程管理以及异常处理(访问BCL)
+
+组成部分
+	编程工具
+	IDE
+	兼容的编译器(语言)
+	调试器
+	web开发服务器端技术(ASP.NET或WCF)
+
+BCL-基类库
+
+
+补充点：
+CLR有一项服务称为GC，
+能够自动管理内存，删除程序中不再访问的对象
+
+
+2.程序集：
+要么是可执行的，要么是DLL；
+程序集的代码是CIL(Common Intermediate Language)，中间语言
+包含的信息如下：
+	A.程序的CIL
+	B.程序中使用的类型的元数据
+	C.对其他程序集引用的元数据
+
+
+3.编译本机代码
+CLR 
+	检查程序集的安全特性，在内存中分配空间，把程序集中的可执行代码发给即时编译器(JIT),
+	把其中的一部分编译成本机代码
+
+托管代码 -为.NET框架编写的代码，需要CLR
+非托管代码 -不在CLR控制下运行的代码，比如C/C++
+
+Ngen -本机映像生成器的工具，将程序集转换成当前处理器的本机代码
+
+源文件 -> 编译器 -> 程序集 -> CLR(JIT) -> 本机代码 -> 操作系统服务
+
+
+
+CLI(Common Language Infrastructure) 公共语言基础结构
+	一组阐释了系统价格、规则和约定的规范
+	包括CLR,CLS,BCL,CTS...
+CTS - 公共类型系统
+	定义了托管代码中一定会使用的类型的特征
+	提供了内置类型，Object..
+CLS - 公共语言规范
+	说明.NET兼容编程语言的规则，属性和行为(包括数据类型，类结构和参数传递)
+	
+	
+	
+【C#编程概述】
+命名空间 - 与某个名称相关联的一组类型声明
+标识符 - 用来命名变量、方法、参数...（数字不能放在首位）
+关键字 - 不能作为变量名或其他形式的标识符，除非以@字符开始；关键字都是小写字母组成
+		（bool,abstract,interface....）
+上下文关键字 - 在特定的语言结构中充当关键字得到标识符，可被代码其他部分作为标识符
+		（add,equals,from...）
+Main - 程序的起始点
+空白 - space/tab/换行符/回车符 编译器忽略源代码使用的空白
+语句 - 以一个分号结束
+块 - 成对大括号包围的0或多条语句序列，在语法上相当于一条语句，没有分号结尾
+
+输出文本
+BCL提供一个Console类
+Write() 	- 不换行输出
+WriteLine() - 换行输出
+
+格式字符串
+Console.WriteLine("The Number is {0} and {1}",3,7);
+
+字符串插值
+Console.WriteLine($"The Number is {3} and {7}");
+
+多重标记和值 - 可以使用任意数量的替代标记和值（超出范围报异常）
+Console.WriteLine("The Number is {1},{0,{1}}",3,6);
+
+格式化数字字符串
+Console.WriteLine("The value:{0:C}",500); 输出$500
+
+{index,alignment:format}  索引号,对齐说明符(可选)，格式字段
+alignment - 正数向右对齐,负数向左对齐
+	Console.WriteLine("|{0,10}|",500);
+	Console.WriteLine("|{0,-10}|", 500);
+	Console.WriteLine("|{0}|", 500);
+格式字段 -格式说明符+精度说明符 F4
+	C - 货币
+	D4 - 十进制数字字符串，和整数类型配合使用；
+		 精度说明符：输出字符串中的最小位数，若实际位数更少，左边输出0补充
+		 {0:D4},12 -> 0012
+	F - 定点，带有小数点的十进制数字字符串
+		{0:F4},12.3456789 -> 12.3457
+	N - 数字，和定点标识符类似，但是会有千位分隔符
+		{0:N2},12345678.54321 -> 12,345,678,54
+	P - 百分比，数字会乘以100
+		精度说明符 - 小数的位数
+		{0:P2},0.1221897 -> 12.22%
+	E - 科学计数法
+		精度说明符 - 小数的位数
+		{0:e4},12.3456789 -> 1.2346e+001
+注释
+
+
+
+【类型，存储和变量】
+C#是一组类型声明
+float/double -浮点数类型
+decimal - 高精度小数类型，可以准确地表示分数，常用于货币的计算
+char - unicode字符类型
+dynamic - 使用动态语言编写的程序集时使用
+
+预定义类型 / 用户定义类型(class,struct,array,enum,delegate,interface)
+=>
+实例化对象 / 声明并实例化
+
+运行中的程序使用两个内存区域来存储数据：
+栈 - 一个内存数组，LIFO的数据结构
+	存储：类型变量的值，程序当前的执行环境，传递给方法的参数
+	特征：数据只能从栈的顶端插入和删除;push/pop
+堆 - 一块内存区域，能够以任意顺序存入和移入
+	堆中的自动垃圾收集：CLR的垃圾收集器发现无主对象，释放它
+
+
+值类型/引用类型
+值类型 - 存储实际的数据，存放在栈里
+引用类型 - 需要两段内存
+		   存储实际的数据，总是位于堆中；
+		   一个引用，存储在栈里，指向数据在堆中的存放位置；
+(对于引用类型的任何对象，所有数据成员都存放在堆里，无论是值/引用类型)
+
+dyanmic - 编译时不检查，运行时检查
+可空类型 - 允许创建可以标记为有效或无效的值类型变量
+
+
+【类的基本概念】
+类是一个能存储数据并执行代码的数据结构，包含数据成员和函数成员
+数据成员 - 存储与类或类的实例相关的数据(字段，常量)
+函数成员 - 执行代码
+
+使用new运算符为实际数据分配并初始化内存(保存引用)
+实例成员 / 静态成员
+
+访问修饰符
+private - 默认的访问级别，稚嫩刚从声明它的内部访问
+public 
+protected
+internal
+protected internal
+
+
+【方法】
+类的函数成员
+var关键字 - 从初始化语句的右边推断类型
+只能用于局部变量；
+只能在变量声明中包含初始化时使用
+一旦编译器推断出变量的类型，就不能更改
+
+局部常量
+必须初始化
+声明后不能改变
+const double PI = 3.1416;
+
+跳转语句 goto
+
+局部函数 - C#7.0，在一个方法的内部声明一个方法
+
+形参 - 声明在方法的参数列表中
+实参 - 用于初始化形参的表达式或变量
+
+值参数 
+	把实参的值赋值给形参
+	(引用类型复制的引用；值类型复制的数据，产生了一个新的数据项)
+引用参数
+	方法的声明和调用必须使用ref修饰符
+	实参必须是变量，且作为实参前必须赋值
+	特点：不会在栈上为形参分配内存；
+		  形参的参数名将作为实参变量的别名，指向相同的内存位置
+		  		  
+引用类型作为值参数传递
+	如果在方法内创建一个新对象并赋值给形参，
+	将切断形参和实参的关联，方法调用后，新对象也将不复存在
+引用类型作为引用参数传递
+	如果在方法内创建一个新对象并赋值给形参，
+	方法结束后该对象依然存在，并且是实参引用的值
+	
+	
+输出参数
+	用于从方法体内把数据传出到调用代码
+	要求：必须在声明和调用中使用修饰符 out
+		实参必须是变量(无需在方法调用之前为实参赋值)
+	    必须在方法内部给输出参数赋值之后才能读取它
+	C#7 新语法：无需预声明一个变量来用作out参数
+		MyMethod(out myclass 1,out int 2)
+		
+
+参数数组
+	要求：在一个参数列表中只能有一个参数数组
+		  如果存在，必须是列表中的最后一个
+		  由参数数组表示的所有参数必须是同一类型
+		  void ListInts(param int[] inVals)
+		  {}
+		  (数组是一个引用类型，所有的数据项都保存在堆中)
+	方法调用：
+		  LsitInts(10,20,30)
+		  或者
+		  int[] intArray = {1,2,3};
+		  ListInts(intArray);
+	如果在对应形参数组的位置没有实参，编译器会创建一个有零个元素的数组
+	关于参数数组，当数组在堆中被创建，实参的值被复制到数组中
+	
+	
+ref局部变量和ref返回
+	允许一个变量时另一个变量的别名:
+		ref int y  = ref x;
+	ref返回 - 返回变量引用而不是变量值
+		在方法的返回类型声明之前加ref
+		在return之后，返回对象的变量名之前加ref
+		不能返回空值/常量/枚举成员/类或者结构体属性/指向只读位置的指针
+		
+方法重载
+	签名：方法名称/参数数目/参数的数据类型和顺序/参数修饰符
+	
+
+命名参数
+	调用时，形参的名字后面跟着冒号和实际的参数值或表达式
+	c.Calc(c:2,a:4,b:3);
+	(命名参数必须放在位置参数后面)
+	
+	
+可选参数
+	声明方法时，给形参提供默认值
+	只有在默认值为null的时候，引用类型才可以作为可选参数
+	声明顺序：必填参数 - 可选参数 - param参数
+	省略必须从后开始往前省略；如果不从最后省略，结合命名参数和可选参数
+	
+	
+栈帧
+	局部变量和参数位于栈上
+	在调用方法时，内存从栈的顶部开始分配，保存和方法关联的一些数据项
+	=> 这块内存叫做方法的栈帧
+	栈帧保存以下内容：
+		返回地址 - 方法退出时继续执行的位置
+		分配内存的参数 - 方法的值参数，可能是参数数组
+		和方法调用相关的其他管理数据项
+	方法调用时，整个栈帧会压入栈
+	方法退出时，整个栈帧会从栈上弹出 - 有时被叫做"栈展开"
+	
+递归
+	方法调用自身
+	阶乘：
+	int Factorial(int inValue)
+	{
+		return inValue <= 1 ? inValue : inValue * Factorial(inValue - 1);
+	}
+	
+
+	
+
+【类】
+声明顺序：[特性] [修饰符] 核心声明
+
+实例成员：
+	类的每个实例拥有自己的各个类成员的副本，
+	改变一个实例的字段副本的值不影响其他实例的副本的值
+	
+静态字段：
+	static int Mem2;
+	被类的所有实例共享，所有实例都访问同一内存位置，
+	若该内存位置的值被一个实例改变，对所有实例都可见
+	
+从类外部访问静态成员：
+	使用类目访问
+	D.Mem2 = 5;
+	
+静态函数成员：
+	静态函数成员不能访问实例成员，但能访问其他静态成员
+	
+常量和索引器不能声明为static
+
+成员常量：
+	没有全局常量，常量必须声明在类型内；
+	编译时必须可计算
+	const int val = 100;
+	常量成员表现得像静态值，但是在内存中没有自己的存储位置
+	
+属性：
+	属性是一个函数成员，一组匹配的、命名的、称为访问器的方法
+	set/get 访问器
+	set访问器：
+		拥有一个单独的、隐式的值参，名为value，与属性的类型相同
+		拥有一个返回类型void
+	get访问器：
+		没有参数
+		拥有一个和属性类型相同的返回类型
+	属性示例：
+		public int MyValue
+		{
+			set{thevalue = value;}
+			get{return thevalue;}
+		}
+	使用属性：
+		属性会根据写入还是读取来隐式调用适当的访问器
+		不能显示地调用访问器
+	属性和关联字段：
+		属性常和字段关联 - 将字段设为private，属性声明为public
+		以此控制从类的外部对该字段的访问
+		Camel - firstField
+		Pascal - FirstField
+	表达函数体：
+		当访问函数体只由一个表达式组成的时候才能使用：
+		get => theValue;
+	设置只读/只写属性
+	自动实现属性：
+		只声明属性而不声明后备字段，由编译器创建隐藏的后备字段
+	静态属性：
+		可以声明为static
+			
+			
+实例构造函数
+	创建每个新实例时执行
+	名称和类目相同，不能有返回值；
+	有参构造函数：
+		可以被重载
+	默认构造函数
+		若没有显示声明，编译器提供一个隐式的默认构造函数:
+		没有参数，方法体为空
+		若已经显示声明，默认构造函数则失效
+	静态构造函数
+		static关键字
+		类只能有一个静态构造函数，而且不能带参数
+		不能有访问修饰符
+		不能显示调用静态构造函数，系统会自动调用
+		(在类的任何实例被创建之前，在类的任何静态成员被引用之前)
+		
+		
+		
+对象初始化语句
+	new TypeName{}
+	new TypeName(ArgList){}
+	初始化发生在构造方法执行之后
+	
+	
+析构函数
+	执行在类的实例被销毁之前需要的清理或释放非托管资源的行为
+	
+	
+readonly修饰符
+	1.
+	const字段只能在字段的声明语句中初始化，
+	readonly字段可以在字段声明语句和类的任何构造函数中设置其值
+	2.
+	const字段必须在编译时决定，readonly可以在运行时决定；
+	3.
+	const的行为总是静态的，readonly可以是实例/静态字段，在内存种有存储位置；
+	
+	
+this关键字
+	在类中使用，是对当前实例的引用；
+	(不能在任何静态函数成员中使用this)
+	用于区分类成员和局部变量或参数/作为调用方法的实参
+	(字段和方法形参重名)
+	
+索引器
+	索引器是一组get和set访问器，与属性类似
+	索引器和属性都不用分配内存来存储；但索引器通常访问多个成员；
+	索引器总是实例成员，不能声明为static
+	语法：
+		string this [int index]
+		{
+			get;set;
+		}
+	没有名称,关键字this.参数列表必须至少声明一个参数
+	e.g:
+	class Employee{
+		public string LastName;
+		public string FirstName;
+		public string CityOfBirth;
+		
+		public srting this[int index]
+		{
+			set
+			{
+				switch(index){
+					case0: LastName = value;
+						break;
+					case1: FirstName = value;
+						break;
+					case2: CityOfBirth = value;
+						break;
+					default:
+						throw new ArgumentOutOfRangeException("index");
+				}
+			}
+			
+			get
+			{
+				switch(index){
+					case0: return LastName;
+					case1: return FirstName;
+					case2: return CityOfBirth;
+					default:
+						throw new ArgumentOutOfRangeException("index");
+				}
+			}
+		
+		}
+	}
+	索引器重载：
+		重载的索引器必须由不同的参数列表；
+		
+
+访问器的访问修饰符：
+	仅当成员既有get访问器也有set访问器时，才能有访问修饰符；
+	两个访问器只能有一个有访问修饰符；
+	访问器的访问修饰符必须低于成员的访问级别；
+	public -> protected internal -> protected/internal -> private
+	
+	
+	
+分布类和分布类型
+	partial class{}
+	分布类声明可以再同一个文件，也可以在不同文件中；
+	分布类声明必须一起编译
+
+分布方法
+	声明在分布类中不同部分的方法，分布方法的不同部分可以声明在分布类的不同部分中；
+	分布方法的定义和声明：
+		返回类型必须是void；
+		签名不能包括访问修饰符，分布方法是隐式私有的；
+		参数列表不能包含out参数；
+		partial void PrintSum(int x,int y);
+		
+
+【类和继承】
+基类 - 派生类
+派生类成员组成：
+	本身声明中的成员；
+	基类的成员；
+所有类都派生自Object：
+	
+屏蔽基类成员：
+	声明一个相同类型的成员，使用相同的名称；
+	使用new修饰符
+
+基类访问
+	若派生类必须访问被隐藏的继承成员，可使用基类访问表达式：
+	base.成员名称
+
+使用基类的引用：
+	OtherClass sc = new OtherClass();
+	SomeClass oc = (SomeClass)sc;
+	sc.print();
+	oc.print();
+	结果一个调用派生类，一个调用基类;
+	将派生类引用转换为基类，基类引用无法访问派生类成员
+	
+虚方法和复写方法：
+	基类方法virtual标注；派生类方法override标注
+	OtherClass sc = new OtherClass();
+	SomeClass oc = (SomeClass)sc;
+	sc.print();
+	oc.print();
+	结果均为调用派生类;
+	
+覆写和被覆写的方法必须有相同的访问性；
+不能覆写static方法或者非虚方法
+方法、属性和索引器均可以被声明为virtual/override
+
+override和new - 三个方法的调用
+virtual 指针 -> override 
+
+
+构造函数的执行
+	继承层次链中的每个类在执行自己的构造函数体之前要执行它的基类构造函数；
+	初始化对象的所有实例成员 -> 调用基类的构造函数1 -> 执行实例构造函数的方法体；
+构造函数初始化语句：
+	1.调用基类构造函数
+	public MyClass(int x, string s):base(s,x)
+	2.调用当前类构造函数
+	public My Class(int x):this()
+	用途：公共构造函数调用私有构造函数（公共的代码）
+	
+类访问修饰符：
+	public - 可被任何程序集的代码访问；
+	internal - 只能被它所在的程序集内的类看到（默认）
+
+成员访问修饰符：
+	public - 程序集内部和外部均可访问
+	private（默认）- 只能被自己的类成员访问，不能被其他类访问，包括继承它的类；
+	protected - 与private类似，但可以被继承它的类访问
+	internal - 对程序集内部所有类可见
+	protected internal - 对所有继承该类程序集内部的所有类可见
+	
+抽象成员：
+	必须是函数成员；字段和常量不能成为抽象成员；
+	用abstract标记；
+	不能有实现代码块；
+	abstract public void PrintStuff(string s);
+	abstract public int MyProperty
+	{
+		get;
+		set;
+	}
+	可声明为抽象的成员：方法，属性，事件和索引器；
+	抽象成员必须在派生类中用相应的成员覆写；
+抽象类：
+	只能被用作其他类的基类；
+	不能创建实例；
+	可以包含抽象成员或普通的非抽象成员；；
+	抽象类可以派生自另一个抽象类；
+	任何派生自抽象类的类必须使用override关键字实现该类所有的抽象成员；
+密封类：
+	sealed修饰符；
+	只能被用作独立的类，不能被用作基类；
+静态类：
+	所有成员都是静态的，
+	用于存放不受实例影响的数据和函数；
+	常用用途：创建一个包含一组数学方法和值的数学库；；
+	类可以有一个静态构造函数，但不能有实例构造函数；
+	是隐式密封的，不能继承静态类；
+
+
+拓展方法：
+	允许编写的方法和声明它的类之外的类关联；
+	语法：
+	声明拓展方法的类必须声明为static；
+	拓展方法本身必须声明为static；
+	拓展方法必须包含关键字this作为它的第一个参数类型，并在后面跟着拓展的类的名称
+	static class ExtendData
+	{
+		public static double Average(this MyData md)
+		{
+			return md.Sum()/3;
+		}
+	}
+	
+命名约定：
+	Pascal - CardDeck - 对外公开
+	Camel - cardDeck - 局部变量
+	下划线+Camel -_cardDeck
+	
+	
+	
+【表达式和运算符】
+字面量 - 指定类型的、明确地、固定的值
+	整数字面量 - 236L长整型，236U无符号整型
+	实数字面量 - F-float，double，M-decimal
+	字符字面量 - 0x十六进制，u005a Unicode
+	字符串字面量 - @忽视转义
+	条件逻辑运算符 - && || !
+	逻辑运算符 - & 位与   两个操作位都为1结果才为1
+				 | 位或   任意操作位为1结果为1
+				 ^ 位异或 有且只有一个位为1结果为1 
+				 ~ 位非   操作数的每个位都取反
+	移位运算符 - x<<3  x>>3
+
+用户定义的类型转换
+	public static impilict/explicit operator TargetType(SourceType Identifier)
+	{
+		return ObjectOfTargetType;
+
+	}
+	
+运算符重载
+	只能用于类和结构
+	public static LimitedInt Operator +(LimitedInt x,double y)
+	{
+	}
+	
+	
+typeof运算符
+	返回已知类型的system.Type对象；
+
+nameof运算符
+	返回用来表示变量、类型或者成员的字符串
+	
+	
+
+
+【语句】
+	if...else
+	do...while
+	while
+	for loop
+	switch...case...default
+	
+swich...case when 过滤：
+	switch(shape)
+	{
+		case Circle c when c.Side>10:
+		break;
+	}
+Note：若同一个分支块中存在多个类型模式，则无法确定在同个分支块中存在多个类型模式；
+	  会报空引用异常；
+	  
+
+跳转语句：
+	break;
+	continue;
+	return;
+	goto;
+	throw;
+	
+标签语句：
+	Identifier:Statement  - 可以与goto结合使用
+	
+	
+using语句:
+	资源是指实现了System.IDisposable接口的类或结构；
+	IDisposable接口含有一个名称为Dispose的方法；
+	using(ResType Resource = new ResType(...))
+	{
+		try
+		{
+			statement //使用资源
+		}
+		finally
+		{
+			处理资源
+		}
+	}
+	using语句可以用于相同类型的多个资源，资源声明使用逗号隔开；
+	using语句还可以嵌套；不一定要使用块；
+	
+	
+【结构】
+与类的区别：
+ 类是引用类型；结构是值类型；
+ 结构是隐式密封的，不能派生其他结构；
+ 结构类型的变量不能声明为null；
+ 两个结构变量不能引用同一变量；
+ 结构存储在栈；类存储在堆中；
+ （复制的值/复制的引用）
+构造函数
+ 结构可以有实例/静态构造函数，但不允许有析构函数；
+ 对于类，编译器只在没有声明其他构造函数时提供隐式的无参构造函数；
+ 结构调用构造函数，可以不用new，但是数据成员的值必须赋值；
+ 静态构造函数： 允许有不带参数的静态构造函数
+
+声明结构体时，不允许使用实例属性和字段初始化语句；
+但是静态属性/字段可以进行初始化，即使结构体本身不是静态的；
+
+
+【枚举】
+枚举是值类型；
+enum TrafficLight
+{
+	Green,
+	Yellow,
+	Red
+}
+每个枚举类型都有一个底层整数类型，默认为int；
+每个枚举成员被赋予一个默认值，默认0，步长为1；
+设置底层类型：
+	enum TrafficLight : ulong{}
+
+位标志
+
+Flag特性
+[Flags]
+作用：枚举Tostring时，多个枚举可以显示其名称，而不是打印值
+
+只能比较相同枚举类型的成员
+
+GetName - 以一个枚举类型对象和一个整数为参数，返回相应的枚举成员的名称；
+GetNames - 以一个枚举对象为参数，返回该枚举中所有成员的名称；
+
+Enum.GetName(typeof(TrafficLight),1)
+
+
+【数组】
+数组一旦创建，大小就固定了，C#不支持动态数组；
+一维数组
+多维数组
+	-矩形数组
+		不管有多少维度，总是使用一组方括号
+		int x = myArray[4,6,1]
+	-交错数组
+		每一个子数组都是独立数组的多维数组；
+		可以有不同长度的子数组
+		jagArray[2][7][4]
+
+数组是对象，引用类型，但数组元素可以是值类型；
+
+声明一维/矩形数组
+	long[] secondArray
+	long[,] arr1  //二维
+实例化一维/矩形数组（默认值为0）
+	int[] arr = new int[4];
+	int[,,] arr = new int[3,6,2]
+访问数组元素
+	int[,] arr = new int[5,10]
+	arr[2,3] = 7
+	int var2 = arr[2,3]
+显示初始化矩形数组：行*列
+	int[,] arr = new int[,]{{10,1}，{2,10}，{11,9}}
+	int[,,] arr = new int[4,3,2] //4列3排，两个元素
+	三维数组3个括号{{{
+	
+交错数组
+	数组的数组，子数组的元素个数可以不同
+	int[][] arr = new int[3][]
+	arr[0] = new int{10,20,30}
+	arr[1] = new int{40,50,60,70}
+	arr[2] = new int{80,90,100,110,120}
+	交错数组中也可能是矩形数组：
+	int[][,] arr;  // [0][0,0] = 10
+	
+	
+foreach的迭代变量是只读的，不能改变；
+值类型不能改变；
+引用类型数组只是保存了数据的引用，而不是数据本身，
+所以虽然不能改变引用，但是可以通过迭代变量改变数据；
+交错数组需要两层foreach；
+
+
+数组协变
+某些情况下，某个对象不是数组的基类型，也可以把它赋值给数组元素；
+-数组是引用类型数组；
+-在赋值的对象类型和数组基类型之间有类型转换
+B继承A，将B类型对象赋值给A类型的数组；
+值类型数组没有协变
+
+Clone方法
+对数组进行浅复制，只创建数组本身的克隆；
+克隆值类型数组会产生两个独立数组；
+克隆引用类型数组会产生指向相同对象的两个数组；
+int[] arr1 = { 1, 2, 3, 4 };
+int[] arr2 = (int[])arr1.Clone();
+
+
+数组ref返回和ref局部变量
+把引用作为返回值传递到方法外
+
+
+
+【委托】
+示例：
+public class Program
+{
+	delegate void Mydeal(int value);
+
+	void PrintLow(int value)
+	{
+		Console.WriteLine(value + "low");
+	}
+
+	void PrintHigh(int value)
+	{
+		Console.WriteLine(value + "High");
+	}
+	public static void Main(string[] args)
+	{
+
+		Program program = new Program();
+		Mydeal mydeal;
+		Random random = new Random();
+		int randomValue = random.Next(0, 99);
+		mydeal = randomValue < 50 ? new Mydeal(program.PrintLow) : new Mydeal(program.PrintHigh);
+		mydeal(randomValue);
+
+	} 
+}
+
+
+语法：
+声明委托：
+	delegate void Mydeal(int x);  //无需在类的内部声明
+创建委托对象：
+	Mydeal deal;
+赋值:
+	deal = new Mydeal(program.PrintLow);
+	可以省略：
+	deal = program.PrintLow;
+组合委托：
+    Mydeal a = program.PrintLow;
+	Mydeal b = program.PrintHigh;
+	Mydeal c = a + b;
+	=> 等于以下写法：
+	mydeal = new Mydeal(program.PrintLow) + new Mydeal(program.PrintHigh);
+从委托中移除方法：
+	mydeal -= program.PrintHigh;
+调用委托：
+	1.像调用方法一样调用委托；2.使用Invoke；
+	调用时委托不能为空，否则会报异常：
+	delVar?.Invoke(65);
+	调用委托如果带有返回值，最后一个方法返回的值为委托调用返回的值；
+	
+匿名方法：
+	实例化委托时内联声明：
+	语法：
+	delegare(参数列表){语句块}
+	delegate int OtherDel(int InParam)
+	static void Main()
+	{
+		OtherDel del = delgate(int x)
+		{
+			return x+20;
+		};
+	}
+	如果委托声明的参数列表包含了param参数，那么匿名方法的参数列表，将忽略params关键字；
+	只要捕获方法是委托的一部分，那么变量离开作用域，外部变量也会一直有效；
+	
+	
+	
+Lambda表达式
+Mydel del = delegate(int x) {return x+1};
+Mydel le1 =  (int x)  => {return x + 1};
+如果只有一个隐式类型参数，可以省略两端的圆括号
+如果语句块包含了一个返回语句，可以将语句替换为return关键字后的表达式；
+Mydel le4 = x => x+1;
+如果没有参数，必须使用一组空的圆括号：
+() => {}
+
+
+
+【事件】
+发布者和订阅者模式
+	发布者定义事件，其他类注册（订阅者类向发布者提供一个方法）；
+	回调方法 - 订阅者提供的方法，或称为事件处理程序；
+	发布者 - 发布某个事件的类/结构，其他类可以在该事件发生时得到通知；
+	订阅者 - 注册并在事件发生时得到通知的类/结构；
+	事件处理程序 - 由订阅者注册到事件的方法，可以定义在发布者或其他类/结构中；
+	触发事件 - 当事件触发，调用注册的方法；
+	
+	事件是专门用于某种用途的简单委托，事件包含了一个私有委托：
+	a.事件提供了对私有控制委托的结构化访问，无法直接访问委托；
+	b.事件中可用的操作比委托少，对于事件只能添加、删除或调用事件处理程序；
+	c.事件被触发时，调用委托依次调用列表中的方法
+	
+	源代码组件：
+	发布者类 - 1.事件声明，2.触发事件的代码；
+	订阅者类 - 事件处理程序声明
+	委托类型声明 + 事件注册
+	
+声明事件 - 委托类型/名称
+    class InCrementor
+    {
+        //event - 关键字;EventHandler - 委托类型;CountedAdozen -事件名
+        public event EventHandler CountedAdozen;
+
+        //逗号分隔，声明多个事件
+        public event EventHandler MyEvent1, MyEvent2;
+
+        //声明静态事件
+        public static event EventHandler MyEvent3;
+    }
+	事件是类或结构的成员，事件被隐式自动初始化为null
+	
+订阅事件
+	向事件添加事件处理程序，必须具有和事件的委托相同的返回类型和签名；
+	实例/静态方法的名称 / 匿名方法 /Lambda表达式
+	InCrementor inCrementor = new InCrementor();
+	inCrementor.CountedAdozen += IncrementDozensCount;
+	
+	样例：
+	public class Program
+    {
+        public static void Main(string[] args)
+        {
+            InCrementer inCrementer = new InCrementer();
+            Dozens dozensCounter = new Dozens(inCrementer);
+
+            inCrementer.DoCount();
+            Debug.WriteLine("Number of Dozen {0}",dozensCounter.DozensCount);
+
+        
+        }
+
+        
+    }
+    delegate void Handler();
+    class InCrementer  //发布者类
+    {
+        public event Handler CountedAdozen; //声明事件并发布
+
+        public void DoCount()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                if (i % 12 == 0 && CountedAdozen != null)
+                {
+                    CountedAdozen(); //每增加12个计数触发事件一次；
+                }
+            }
+        }
+    }
+
+    class Dozens //订阅者类
+    {
+        public int DozensCount { get; private set; }
+
+        public Dozens(InCrementer inCrementer)
+        {
+            DozensCount = 0;
+            inCrementer.CountedAdozen += inCrementDozensCount; //订阅事件
+        }
+
+        void inCrementDozensCount()  //声明事件处理程序
+        {
+            DozensCount++;
+        }
+
+    }
+	
+	
+标准事件的用法：
+	EventHandler(Obeject sender,EventArgs e)
+	第一个参数用来保存触发事件的对象引用，
+	第二个参数用来保存状态信息，指明什么类型用于应用程序；
+	EventArgs不能传递数据，通常忽略，若需要传递，声明一个派生类；
+	事件处理程序的签名必须与委托类型的相匹配
+	
+	传参：
+	public event EventHandler<CustomClass> EventName;
+	回调方法，第二个参数类型，用CustomClass
+	
+	GUI编程 - 事件驱动
+	public delegate void EventHandler(Object sender,EventArgs e)
+	改写：
+	public class Program
+    {
+        public static void Main(string[] args)
+        {
+            InCrementer inCrementer = new InCrementer();
+            Dozens dozensCounter = new Dozens(inCrementer);
+
+            inCrementer.DoCount();
+            Debug.WriteLine("Number of Dozen {0}",dozensCounter.DozensCount);
+
+        
+        }
+
+        
+    }
+    class InCrementer  //发布者类
+    {
+        public event EventHandler CountedAdozen; //声明事件并发布
+
+        public void DoCount()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                if (i % 12 == 0 && CountedAdozen != null)
+                {
+                    CountedAdozen(this,null); //每增加12个计数触发事件一次；
+                }
+            }
+        }
+    }
+
+    class Dozens //订阅者类
+    {
+        public int DozensCount { get; private set; }
+
+        public Dozens(InCrementer inCrementer)
+        {
+            DozensCount = 0;
+            inCrementer.CountedAdozen += inCrementDozensCount; //订阅事件
+        }
+
+        void inCrementDozensCount(Object sourece,EventArgs e)  //声明事件处理程序
+        {
+            DozensCount++;
+        }
+
+    }
+	
+事件访问器：
+	让事件执行自定义代码
+	public event EventHandler<IncrementEventArgs> CountedAdozen
+	{
+		add { }
+		remove { }
+	}
+	
+	整个事件流程：
+	发布者类-声明事件和触发事件的代码
+	订阅者类-声明字段，定义一个回调方法，构造函数参数为发布者类，其中使用+=订阅事件
+	调用时，new发布者/订阅者类，触发事件
+	
+【接口】
+一组函数成员而不实现的引用类型，只能类和接口来实现接口；
+示例：
+	public static void Main(string[] args)
+	{
+		static void PrintInfo(Info item)
+		{
+			Debug.WriteLine("Name:{0},Age:{1}", item.GetName(), item.GetAge());
+		}
+
+		CA a = new CA() {Name="John Bean",Age =22 };
+		CB b = new CB() {First ="John",Last ="Bean",Age=22};
+		PrintInfo(a);
+		PrintInfo(b);
+	}
+
+    }
+
+    interface Info
+    {
+        string GetName();
+        int GetAge();
+    }
+
+    class CA : Info
+    {
+        public string Name;
+        public int Age;
+        public int GetAge()
+        {
+            return Age;
+        }
+
+        public string GetName()
+        {
+            return Name;
+        }
+    }
+
+    class CB : Info
+    {
+        public string First;
+        public string Last;
+        public int Age;
+        public int GetAge()
+        {
+            return Age;
+        }
+
+        public string GetName()
+        {
+            return First + Last;
+        }
+    }
+	
+	IComparable接口 - 实现了CompareTo方法
+	示例：
+	public class Program
+    {
+        public static void Main(string[] args)
+        {
+            MyClass[] array = new MyClass[5];
+            array[0] = new MyClass() { TheValue = 15 };
+            array[1] = new MyClass() { TheValue = 10 };
+            array[2] = new MyClass() { TheValue = 17 };
+            array[3] = new MyClass() { TheValue = 8 };
+            array[4] = new MyClass() { TheValue = 9 };
+
+        }
+   
+    }
+
+    public class MyClass : IComparable
+    {
+        public int TheValue;
+
+        public int CompareTo(object obj)
+        {
+            MyClass mc = (MyClass)obj;
+            if (this.TheValue < mc.TheValue) return -1;
+            if (this.TheValue > mc.TheValue) return 1;
+            return 0;
+
+        }
+    }
+	
+接口声明：
+	不能包含数据成员和静态成员；
+	只能包含：方法，属性，索引器，事件；
+	不能包含代码实现；
+	
+	接口声明可以包含任何访问修饰符，
+	接口成员默认隐式public，不能添加访问修饰符；
+	
+实现接口：
+	只有类和结构才能实现接口；
+	为每一个接口成员提供实现；
+	基类名必须放在接口名称之前；
+	
+	
+接口是引用类型：
+	不能直接通过类成员的对象访问接口；
+	但可以强制类型转换成接口类型进行访问；
+	
+	
+接口和as运算符	
+	强制类型转换抛异常；as返回null，不抛异常；
+	ITest it = mc as ITest;
+	
+实现多个接口
+
+如果一个类实现了多个接口，接口成员重复，可以实现单个成员来满足重复的接口；
+声明为public
+
+派生成员作为实现：
+	父类具有和接口相同的成员实现；
+	子类继承父类和接口；
+	此时子类不实现接口，仍然可以调用；
+
+
+显示接口成员实现
+	接口成员必须转换成接口引用才能访问
+	public class Program
+    {
+        public static void Main(string[] args)
+        {
+
+            MyClass mc = new MyClass();
+
+            ITest1 test1 = mc as ITest1;
+            ITest2 test2 = mc as ITest2;
+            test1.PrintOut("G");
+            test2.PrintOut("G");
+
+        }
+
+    }
+
+    public class MyClass : ITest1, ITest2
+    {
+        void ITest1.PrintOut(string s)
+        {
+            Debug.WriteLine("ITest1" + s);
+        }
+
+        void ITest2.PrintOut(string s)
+        {
+            Debug.WriteLine("ITest2" + s);
+        }
+    }
+
+
+    interface ITest1
+    {
+        void PrintOut(string s);
+    }
+
+    interface ITest2
+    {
+        void PrintOut(string s);
+    }
+	
+访问显示接口成员实现：
+	只可以通过指向接口的引用来访问
+	public class MyClass : ITest1
+    {
+        void ITest1.PrintOut(string s)
+        {
+            Debug.WriteLine("ITest1" + s);
+        }
+        public void Method()
+        {
+            ((ITest1)this).PrintOut("");
+        }
+       
+    }
+	
+	
+接口可以继承接口；
+类如果继承了一个这样的接口，需要实现它所有的继承成员；
+
+完整接口样例：
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            Animal[] arrAnimals = new Animal[3];
+            arrAnimals[0] = new Cat();
+            arrAnimals[1] = new Dog();
+            arrAnimals[2] = new Birld();
+            foreach (Animal a in arrAnimals)
+            {
+                ILiveBirth b = a as ILiveBirth;
+                if (b!=null)
+                {
+                    Debug.WriteLine(b.BabyCalled());
+                }
+            }
+        }
+
+    }
+
+    interface ILiveBirth
+    {
+        string BabyCalled();
+    }
+
+    class Animal
+    {
+
+    }
+ 
+    class Cat: Animal,ILiveBirth
+    {
+        public string ILiveBirth.BabyCalled()
+        {
+            return "MOW";
+        }
+    }
+
+    class Dog : Animal,ILiveBirth
+    {
+        string ILiveBirth.BabyCalled()
+        {
+            return "WOW";
+        }
+    }
+
+    class Birld :Animal
+    {
+
+    }
+	
+	
+【类型转换】
+隐式转换
+	不丢失数据或精度，短类型 -> 长类型
+	零拓展 
+		更小的无符号类型转换为更大值，目标类型多出来的最高位以0补充；
+		8位的10到16位的10
+	符号拓展
+		有符号类型的转换，最高位用源表达式的符号进行填充
+	（二进制里，有符号类型第一位表示正负）
+	
+
+显示转换
+	数据溢出，精度缺失
+	
+
+溢出检测上下文
+	checked   -  CLR会在转换溢出时抛出OverflowExcepetion
+	unchecked
+	默认的溢出检测是不检查
+	ushort sh = 2000;
+	byte sb;
+	sb = checked((byte)sh);
+	sb = unchecked((byte)sh);
+	也可以使用checked和unchecked表达式，可以嵌套使用：
+	checked
+	{
+		unchecked
+		{
+			...
+		}
+		...
+	}
+
+引用转换
+	引用类型的对象由内存的两部分组成：引用和类型；
+	隐式引用类型转换：
+		所有引用类型可以隐式转换为Object类型；
+		任何接口可以隐式转换为它继承的接口；
+		类可以隐式转换为：继承链中的任何类，实现的任何接口；
+	显示引用转换
+		从一个普通类型到一个更精确类型
+		A var1 = new A();
+		B var2 = (B)var1;
+		此时抛异常
+	有效显示引用类型转换：
+		1.A变量指向为null
+		2.无需显示转换
+		3.as转换符
+	装箱转换
+		一种隐式转换，解释值类型，返回对象引用
+		装箱是创建副本，返回值的引用类型副本
+	拆箱转换
+		显示转换，把装箱后的对象转换为值类型
+	用户自定义转换
+		public static implicit operatior Person(int i)
+		{
+			return new person()
+		}
+		多部用户自定义转换
+			person -> int
+			employee : person
+			employee -> float 可
+	is转换符
+		用于引用转换、装箱/拆箱，不能用于用户自定义类型转换；
+	as运算符
+		不抛出异常，失败返回null，和is限制一致
+	is和as区别：
+		is只做类型兼容判断，true和false
+		as效率更高，一次判断，is两次(判断是否为该类型，对象是否为null)
+		
+		
+【泛型】
+泛型类型不是类型，而是类型的模板，类型是实例的模板；
+支持的类型 - 类、结构、接口、委托、方法；
+
+类型参数的约束
+	约束类型
+		类名 - 只有该类型的类或派生类才能用作类型实参
+		class - 任何引用类型（类、数组、委托、接口）
+		struct - 任何值类型
+		接口名 - 只有该接口或实现接口的类型
+		new() - 任何带有无参公共构造函数的类型
+	顺序
+		最多只能有一个主约束，且必须放在第一位；
+		可以有任意多的接口名称约束；
+		构造函数约束必须放在最后；
+		
+
+泛型方法
+	可以在泛型/非泛型类以及接口和结构中声明；
+	public static  int printInvoke<P>(P abc) where P : print { return 1; }
+	推断类型：
+		某些情况下调用时可以省略类型：
+		static void Main(string[] args) { printInvoke(2);}
+        public static  int printInvoke<P>(P abc)  { return 1; }
+	泛型拓展方法：
+		必须声明为static；
+		必须是静态类成员；
+		第一个参数类型中必须有关键字this + sourceType
+	泛型结构
+	泛型委托：
+		Func<int, string> abc = x => x.ToString();
+	泛型接口：
+		public class Program
+		{
+			static void Main(string[] args)
+			{
+				var t1 = new Imple<int>();
+				var t2 = new Imple<string>();
+
+				t1.ReturnIt(5);
+				t2.ReturnIt("5");
+			}
+		}
+		interface IMyInt<T>
+		{
+			T ReturnIt(T value);
+		}
+
+		class Imple<s> : IMyInt<s>
+		{
+			public s ReturnIt(s value)
+			{
+				return value;
+			}
+		}
+		补充：
+		1.用不同类型参数实例化的泛型接口的实例是不同的接口；
+		2.可以在非泛型类中实现泛型接口；
+		泛型接口的实现必须唯一：
+			class simple : ImyIt<int>,ImyIt<T>
+			{
+				public void printout()
+				{
+					throw new NotImplementedException();
+				}
+			}
+			//错误
+	
+
+协变/逆变
+泛型委托
+	协变
+		赋值兼容性 - 可以将派生类型的对象赋值给基类型的变量
+		public class Program
+		{
+			public static void Main(string[] args)
+			{
+				Factory<Dog> dogMaker = MakeDogs;
+				Factory<Animal> animalMaker = dogMaker;
+				//委托没有out将报错
+			}
+			static Dog MakeDogs() { return new Dog(); }
+
+		}
+
+		delegate T Factory<out T>(); 
+
+		class Animal { public int legs = 4; }
+		class Dog : Animal { }
+		类型参数作为输出值；
+		仅将派生类型作输出值与构造委托有效性之间的常熟关系叫做协变；out关键字标记委托声明中的类型参数；
+		协变关系允许程度更高的派生类处于返回及输出位置
+	逆变
+		示例：
+		public class Program
+		{
+			public static void Main(string[] args)
+			{
+				Action<Animal> act = ActionAnimal;
+				Action<Dog> dog1 = act;
+				dog1(new Dog());
+			}
+
+			static void ActionAnimal(Animal a) { Debug.WriteLine($"{a.NumberOfLegs}"); }
+
+		}
+		delegate void Action<in T>(T a);
+		class Animal { public int NumberOfLegs = 4; }
+		class Dog : Animal { }
+		允许传入基类时传入派生类型的对象
+
+接口
+	协变示例：
+	public static void Main(string[] args)
+	{
+		SimpleImp<Dog> dogImp = new SimpleImp<Dog>();
+		dogImp.items[0] = new Dog() { Name = "SB" };
+
+		IMyInt<Animal> myInt = dogImp;
+
+		DoSomething(dogImp);
+	}
+	static void DoSomething(IMyInt<Animal> returner) 
+	{
+		Debug.WriteLine($"{returner.GetFirst().Name}");
+	}
+
+    }
+    class Animal { public string Name; }
+    class Dog : Animal { }
+
+    interface IMyInt<out T>
+    {
+        T GetFirst();
+    }
+
+    class SimpleImp<T> : IMyInt<T>
+    {
+        public T[] items = new T[2];
+        public T GetFirst() { return items[0];}
+        
+    }
+	
+	
+【枚举器和迭代器】
+可枚举类型 - 实现GetEnumerator方法的类型 -> 获取对象枚举器
+枚举器可以依次返回请求的数组中的元素；
+
+foreach(和可枚举类型一起使用) - 通过调用GetEnumerator方法获取对象枚举器，将请求中的每一项作为迭代变量（只读）
+
+IEnumerator接口
+实现该接口的枚举器包含3个函数成员：
+Current - 返回序列中当前位置项的属性，只读，返回Object类型；
+MoveNext - 把枚举器位置前进到集合中下一项的方法，返回Boolean，指示新位置是有效还是已到序列尾部；
+（枚举器原始位置在序列中的第一项之前，因此MoveNext必须在第一次使用Current之前调用）
+Reset - 将位置重置为原始状态
+
+
+示例：
+	int[] arr1 = { 10, 11, 12, 13 };
+	var result = arr1.GetEnumerator();
+	while (result.MoveNext())
+	{
+		int item = (int)result.Current;
+	}
+
+
+IEnumerable接口
+可枚举类指实现了IEnumerable接口的类，该接口只有一个成员 - GetEnumerator
+
+
+使用IEnumerable 和 IEnumerator的示例：
+	class Program
+	{
+		static void Main(string[] args)
+		{
+
+			Spectrum spectrum = new Spectrum();
+			foreach (string color in spectrum)
+			{
+				Console.WriteLine(color);
+			}
+        }
+
+	}
+
+
+	class ColorEnumerator : IEnumerator
+	{
+		string[] colors;
+		int position = -1;
+
+		public ColorEnumerator(string[] theColors)
+		{
+			colors = new string[theColors.Length];
+			for (int i = 0; i < theColors.Length; i++)
+			{
+				colors[i] = theColors[i];
+			}
+		}
+
+
+		public object Current
+		{
+			get
+			{
+				if (position == -1) throw new InvalidOperationException();
+				if (position >= colors.Length) throw new InvalidOperationException();
+
+				return colors[position];
+			}
+			
+		}
+
+		public bool MoveNext()
+		{
+			if (position < colors.Length -1)
+			{
+				position++;
+				return true;
+			}
+			else
+			{
+				return	false;
+			}
+		}
+
+		public void Reset()
+		{
+			position = -1;
+		}
+	}
+
+
+	class Spectrum : IEnumerable
+	{
+		string[] Colors = { "violet", "blue", "cyan", "green", "yellow", "orange", "red" };
+
+		public IEnumerator GetEnumerator()
+		{
+			return new ColorEnumerator(Colors);
+		}
+	}
+	
+	
+泛型枚举接口
+	IEnumerable<T> 和 IEnumerator<T>
+	泛型接口继承自非泛型接口；Current属性返回实际类型的实例，而不是object基类的引用；
+	（实现这类接口的对象可以是派生的类型）
+	
+	迭代器：
+	public IEnumerator<string> BlackAndWhite()
+	{
+		yield return "black";
+		yield return "gray";
+		yield return "white";
+	}
+	
+	public IEnumerator<string> BlackAndWhite()
+	{
+		string[] theColors = {"black","gray","white"};
+		for(int i = 0; i<theColors.Length;i++) yield return theColors[i];
+	}
+	
+	yield return 指定序列中要返回的下一项；
+	yield break 指定在序列中没有其他项
+	
+	使用迭代器创建枚举器 - 示例：
+	public IEnumerator<string> GetEnumerator()
+	{
+		return BlackAndWhite();
+	}
+	
+	public IEnumerator<string> BlackAndWhite()
+	{
+		yield return "black";
+		yield return "gray";
+		yield return "white";	
+	}
+	
+	使用迭代器创建可枚举类型 - 示例：
+	public IEnumerator<string> GetEnumerator()
+	{
+		var myEnumerable = BlackAndWhite();
+		return myEnumerable.GetEnumerator();
+	}
+	
+	public IEnumerable<string> BlackAndWhite()
+	{
+		yield return "black";
+		yield return "gray";
+		yield return "white";	
+	}
+	
+	由编译器生成的枚举器类是包含4个状态的状态机：
+	Before - 首次调用MoveNext之前的初始状态；
+	Running - 调用MoveNext后进入该状态；枚举器检测并设置下一项的位置；
+			  遇到yield return，yield break或在迭代器体结束时。退出状态；
+	Suspended - 状态机等待下次调用MoveNext的状态，没有更多项进入After状态；
+	After - 没有更多项可以枚举的状态；
+		
+迭代器作为属性：
+	声明bool型字段，
+	构造函数中给它赋值，
+	GetEnumerator()方法中根据bool值判断调用哪个迭代器
+	
+	
+
+【Linq】
+语言集成查询 - Language Integrated Query
+
+int[] nums = { 1, 5, 7, 8, 3, 10 };
+var result = from n in nums
+			 where n>5
+			 select n;
+			 
+			 
+Linq提供程序 - 根据数据类型实现Linq查询的代码模块
+
+            
+匿名类型 - var student = new { Name = "猪鼻", Age = 20, Gender = "女" };
+匿名属性成员属性值 为只读，var关键字必须，局部变量；
+
+查询语法 - 声明式 - 查询描述返回的东西，没有指明如何执行该查询
+方法语法 - 命令式 - 指明查询方法调用的顺序
+二者性能上没有差异
+	
+查询表达式的结构
+from子句
+from和foreach区别 - from没有假定集合中的项以什么顺序执行；
+					from只有在程序的控制流遇到访问查询变量的语句，才会执行；
+
+
+join子句
+var query = from s in students
+			join c in studentsInCourses on s.ID equals c.ID
+			
+
+var result =  from s in students
+			  join c in courses
+			  on s.SId equals c.CId
+			  where c.CName == "历史"
+			  select s.SName;
+			  
+
+from...let...where...
+from子句
+	var groupA = new[] { 3, 4, 5, 6 };
+	var groupB = new[] { 7, 8, 9, 10 };
+
+	var query = from a in groupA
+				from b in groupB
+				where a > 4 && b <= 8
+				select new { a, b, sum = a + b };
+
+	foreach (var x in query)
+	{
+		Debug.WriteLine(x);
+	}
+	
+
+let子句
+	接受一个表达式的运算并把它赋值给一个需要在其它运算中使用的标识符
+	var groupA = new[] { 3, 4, 5, 6 };
+	var groupB = new[] { 7, 8, 9, 10 };
+
+	var query = from a in groupA
+				from b in groupB
+				let sum = a+b
+				where sum == 12
+				select new { a, b, sum };
+								
+orderby子句
+	默认升序
+	ascending / descending
+	
+	
+	
+select...group子句
+查询字的匿名类型 - select new{Name = '',Age =1}
+示例：
+public static void Main(string[] args)
+{
+	var query = from s in students
+				group s by s.Major;
+	foreach (var g in query)
+	{
+		Debug.WriteLine($"{g.Key}");
+
+		foreach (var s in g)
+		{
+			Debug.WriteLine($"  {s.SName}  ");
+		}
+	}				
+}
+
+static Students[] students =
+{
+	new Students(){SId =1,SName="小牛",Major ="历史"},
+	new Students(){SId =2,SName="小马",Major ="政治"},
+	new Students(){SId =3,SName="小猪",Major ="物理"},
+	new Students(){SId =4,SName="小羊",Major ="英语"},
+	new Students(){SId =5,SName="小狗",Major ="政治"},
+	new Students(){SId =6,SName="小鸡",Major ="英语"},
+	new Students(){SId =7,SName="小人",Major ="物理"},
+	new Students(){SId =8,SName="小孩",Major ="历史"},
+};
+
+
+
+
+into子句
+查询延续，可以将接受查询的一部分结果并赋予一个名字，从而在另一个查询中使用：
+var query = from s in students
+			join c in courses
+			on s.Major equals c.CName
+			into queryAgain
+			from q in queryAgain
+			select q;
+			
+
+标准查询运算符
+SelectMany
+TakeWhile
+SkipWhile
+Reverse
+Distinct
+Union - 返回并集
+Intersect - 返回交集
+AsEnumerable
+
+
+int[] arr = new int[] { 1, 2, 3, 4, 5 };
+arr.Count();
+Enumerable.Count(arr);
+
+
+委托作为参数：
+public static int Count<T>(this IEnumerable<T> source,Func<T,bool> predicate)
+
+static bool isOdd(int x)
+{
+	return x % 2 == 0;
+}
+public static void Main(string[] args)
+{
+	int[] x = { 3, 4, 5, 6, 7, 9 };
+	Func<int, bool> mydel = isOdd;
+	var result = x.Count(mydel);
+}
+
+
+xml
+没有元素的标签 <tag/>
+
+Linq to XML API
+示例：
+using system.xml.Linq
+XDocument employee1 = new XDocument(
+new XElement("Employees",
+new XElement("Name", "bob"),
+new XElement("Name", "tom")));
+
+employee1.Save("Employee.xml");  //保存到文件
+
+XDocument empolyee2 = XDocument.Load("Employee.xml");  //显示文档
+Debug.WriteLine(empolyee2);
+
+
+增加节点：
+var a = employee1.Element("Employees");
+a.Add(new XElement("Name", "cxl"),
+	new XElement("Name", "xcm"));
+	
+xml属性
+new xmlElement("root",
+new xmlAttribute("color","red"));
+移除属性： 获取元素.xmlElement，然后.Attribute().Remove()
+		   或者.SetAttributeValue("",null)
+		   
+		   
+xComment xml注释
+xDeclaration  xml声明，包含版本号，字符编码，是否依赖外部引用
+xProcessingInstruction 关联xml文档和样式表
+
+结合Linq简单查询一起使用：
+var xyz = from e in xd.Element("MyElements").Elements()
+		  select new {e.Name,color = e.Attribute("color")};
+
+
+
+
+
+【异步编程】
+启动程序时，系统会在内存中创建一个新的
+进程 - 构成运行程序的资源的集合（虚地址空间，文件句柄...）
+
+进城内部，系统创建了一个内核对象
+线程 - 代表真正执行的程序，
+系统会在Main方法的第一行语句处开始线程的执行
+
+线程相关知识点：
+默认情况下，一个进程只包含一个线程，从程序开始一直执行到结束；
+线程可以派生其他线程，因此一个进程可能包含不同状态的多个线程；
+一个进程拥有多个线程，它们共享进程资源；
+系统为处理器执行所调度的单元是线程
+
+同步示例：
+public class Program
+{
+	public static void Main(string[] args)
+	{
+		MyDownLoadString md = new MyDownLoadString();
+		md.DoRun();
+	}
+}
+class MyDownLoadString
+{
+	Stopwatch sw = new Stopwatch();
+
+	private int CountCharacters(int id, string usistring)
+	{
+		WebClient wc1 = new WebClient();
+		Debug.WriteLine("Starting call {0}  :  {1,4:N0} ms",id,sw.Elapsed.TotalMilliseconds);
+		string result = wc1.DownloadString(new Uri(usistring));
+		Debug.WriteLine("call {0} completed  :  {1,4:N0} ms",id,sw.Elapsed.TotalMilliseconds);
+		return result.Length;
+	}
+
+	private void CountToALargeNumber(int id,int value)
+	{
+		for (long i = 0; i < value; i++);
+		Debug.WriteLine("End counting {0}  :  {1,4:N0} ms",id,sw.Elapsed.TotalMilliseconds);
+	}
+
+	public void DoRun()
+	{
+		const int LargeNumber = 6_000_000;
+		sw.Start();
+		int t1 = CountCharacters(1, "https://www.taobao.com/");
+		int t2 = CountCharacters(2, "https://www.baidu.com/");
+		CountToALargeNumber(1,LargeNumber);
+		CountToALargeNumber(2,LargeNumber);
+		CountToALargeNumber(3,LargeNumber);
+		CountToALargeNumber(4,LargeNumber);
+		Debug.WriteLine($"char in taobao.com : {t1}");
+		Debug.WriteLine($"char in baidu.com : {t2}");
+	}
+}
+
+
+异步示例：
+public class Program
+{
+	public static void Main(string[] args)
+	{
+		MyDownLoadString md = new MyDownLoadString();
+		md.DoRun();
+	}
+}
+class MyDownLoadString
+{
+	Stopwatch sw = new Stopwatch();
+
+	private async Task<int> CountCharactersAsync(int id, string usistring)
+	{
+		WebClient wc1 = new WebClient();
+		Console.WriteLine("Starting call {0}  :  {1,4:N0} ms", id, sw.Elapsed.TotalMilliseconds);
+		string result = await wc1.DownloadStringTaskAsync(new Uri(usistring));
+		Console.WriteLine("call {0} completed  :  {1,4:N0} ms", id, sw.Elapsed.TotalMilliseconds);
+		return result.Length;
+	}
+
+	private void CountToALargeNumber(int id, int value)
+	{
+		for (long i = 0; i < value; i++) ;
+		Console.WriteLine("End counting {0}  :  {1,4:N0} ms", id, sw.Elapsed.TotalMilliseconds);
+	}
+
+	public void DoRun()
+	{
+		const int LargeNumber = 6_000_000;
+		sw.Start();
+		Task<int> t1 = CountCharactersAsync(1, "https://www.taobao.com/");
+		Task<int> t2 = CountCharactersAsync(2, "https://www.baidu.com/");
+		CountToALargeNumber(1, LargeNumber);
+		CountToALargeNumber(2, LargeNumber);
+		CountToALargeNumber(3, LargeNumber);
+		CountToALargeNumber(4, LargeNumber);
+		Console.WriteLine($"char in taobao.com : {t1}");
+		Console.WriteLine($"char in baidu.com : {t2}");
+	}
+}
+
+
+async/await特性的机构
+组成部分：
+调用方法
+	调用异步方法，然后在异步方法执行其任务的时候继续执行（可能在相同/不同的线程上）
+异步方法
+	该方法异步执行工作，立即返回调用方法
+await表达式
+	用于异步方法内部，指明需要异步执行的任务，一个异步方法可以包含任意多个await表达式
+	
+
+异步方法特点
+	方法头包含async修饰符
+	包含一或多个await表达式，表示可以异步完成的任务
+	必须具备以下3种返回类型之一
+		void
+		Task
+		Taks<T>
+		ValueTask<T>
+	异步方法的形参可以使任意类型和数量，但不能为ref或out参数
+	异步方法名称以Async为后缀
+	Lambda表达式和匿名方法可以作为异步对象
+	
+async关键字
+	用于异步方法的方法头 async Task Method
+	该修饰符表示该方法包含一个或多个awiat表达式，其本身不能创建任何异步操作
+	上下文关键字/标识符
+返回类型
+	Task       	- 若调用方法不需要从异步方法中返回值，但需要检查异步方法的状态，
+			      那么可以返回一个Task类型的对象；
+			      若异步方法中包含任何return语句，则不会返回任何东西；
+	Task<T>     - 如果调用方法要从调用中获取一个T类型的值，异步方法的返回类型必须是Task<T>
+			      调用方法将通过Task的Result属性来获取这个T类型的值
+	ValueTask<T>- 值类型对象，与Task<T>类似，但用于任务可能已经可用的情况；
+				  由于是值类型，可以放在栈上，而无需像Task<T>那样在堆上分配空间
+				  因此，某些情况下可以提高性能
+	void        - 如果调用方法仅仅想执行异步方法，而无需与它做任何进一步的交互时
+				  (称为调用并忘记fire and forget)，可以返回void类型；
+				  如果异步方法中包含任何return语句，则不能返回任何东西
+	任何具有可访问的GetAwaiter方法的类型
+	任何返回值必须为Task<T>类型的异步方法，其返回值必须是T类型或可隐式转换为T的类型
+	
+	
+异步方法的结构区域
+	第一个await表达式之前的部分 - 这一部分应只包含少量无需长时间处理的代码
+	await表达式 - 表示将被异步执行的任务
+	后续部分 - await表达式之后的方法中的其余代码，包括执行环境，所在线程信息、
+			   部分作用域内的变量值，以及当await表达式完成后重新执行时所需的其他信息
+	
+控制流
+	异步方法内，调用方法内
+	
+	
+	
+异步方法的return语句并不是真的返回某个值，只是退出了
+
+await表达式
+	指定了一个异步执行的任务： await关键字 + 空闲对象(任务) 
+	任务可能是一个Task类型的对象，默认情况下，任务在当前线程上异步执行
+	await task
+	一个空闲对象即为一个awaitable类型的实例
+  （指包含GetAwaiter方法的类型，该方法无参数，返回一个awaiter类型的对象）
+  
+awaiter类型包含以下成员：
+	bool IsCompleted{get;}
+	void OnCompleted(Action);
+	以下成员之一： void GetResult() / T GetResult();
+	
+BCL中存在很多返回Task<T>类型的对象，编写自己的方法，作为await表达式的任务：
+使用Task.Run
+	TaskR Run(Func<TReturn> func)
+	传委托，匿名方法2，或者Lambda表达式
+可作为Task.Run方法第一个参数的委托类型
+	Action
+	Func<TResult>
+	Func<Task>
+	Fun<Task<TResult>>
+	示例：	
+	public static async Task DoWorkAsync()
+	{
+		await Task.Run(() =>  Console.WriteLine(5.ToString()));   // Action
+
+		Console.WriteLine((await Task.Run(() => 6)).ToString());  // TResult Func()
+
+		await Task.Run(() => Task.Run(() => Console.WriteLine(7.ToString())));  // Task Func()
+
+		int value = await Task.Run(() => Task.Run(() => 8)); // Task<TResult> Func
+		Console.WriteLine(value.ToString());
+	}
+	
+取消一个异步操作
+ CancellationToken
+ CancellationTokenSource
+
+CancellationToken
+ 1.该对象包含一个任务是否应被取消的信息；
+ 2.拥有该对象的任务需要定期检查其令牌状态，若CancellationToken
+ 对象的IsCancellationRequired属性为true，任务需停止操作并返回；
+ 3.CancellationToken是不可逆的，只能使用一次，即
+ 一旦IsCancellationRequired属性设置为true，就不能更改了；
+CancellationTokenSource
+ 该对象可分配给不同任务的CancellationToken对象，
+ 任何持有CancellationTokenSource的对象都可以调用其Cancel方法；
+ 者会将IsCancellationRequired属性设为true
+
+
+示例：
+public static void Main(string[] args)
+{
+ CancellationTokenSource cts = new CancellationTokenSource();
+ CancellationToken token = cts.Token;
+
+ MyClass mc = new MyClass();
+ Task t = mc.RunAsync(token);
+
+ Thread.Sleep(3000);
+ cts.Cancel();
+
+ t.Wait();
+ Debug.WriteLine($"was canceled : {token.IsCancellationRequested}");
+
+}
+
+class MyClass
+{
+ public async Task RunAsync(CancellationToken ct)
+ {
+  if (ct.IsCancellationRequested) return;
+  await Task.Run(() => CycleMethod(ct),ct);
+
+ }
+
+ void CycleMethod(CancellationToken ct)
+ {
+  Debug.WriteLine("Starting CycleMethod");
+  const int max = 5;
+  for (int i = 0; i < max; i++)
+  {
+   if (ct.IsCancellationRequested) return;
+   Thread.Sleep(1000);
+   Debug.WriteLine($"{i+1} of {max} ilteration completed");
+  }
+ }
+}  
+异常处理和await表达式
+示例：
+public static void Main(string[] args)
+{
+ Task t = BadAsync();
+ t.Wait();
+ Debug.WriteLine($"TaskStatus:{t.Status}");
+ Debug.WriteLine($"TaskIsFaulted:{ t.IsFaulted}");
+
+}
+
+static async Task BadAsync()
+{
+ try
+ {
+  await Task.Run(() => throw new Exception());
+ }
+ catch (Exception)
+ {
+
+  Debug.WriteLine("Excepetion in BadAsync");
+ }
+}
+
+
+
+调用方法中同步地等待任务
+Task的实例方法：Wait
+
+wait方法用于单一对象
+也可以等待一组task完成：
+WaitAll
+WaitAny
+e.g. Task.WaitAll(t1,t2)
+
+
+异步方法中异步地等待任务
+await Task.WhenAll(tasks)
+await Task.WhenAny(tasks)
+
+Task.Delay
+创建一个对象，暂停线程中的处理，并在一定时间后完成
+Thread.Sleep 会阻塞线程，Task.Delay继续执行
+await Task.Delay(1000)
+
+
+Task.Yield
+创建一个立即返回的awaitable，
+等待一个yield可以让异步方法在执行后续部分的同上返回到调用方法
+class Program
+{
+	static void Main(string[] args)
+	{
+		Task<int> value = DoStuff.FindeSeriesSum(1_000_000);
+		CountBig(100_000);
+		CountBig(100_000);
+		CountBig(100_000); 
+		CountBig(100_000);
+		Console.WriteLine($"Sum:{value.Result}");
+	}
+
+	private static void CountBig(int p)
+	{
+		for (int i = 0; i < p; i++) ;
+	}
+}
+
+static class DoStuff
+{
+	public static async Task<int> FindeSeriesSum(int i1)
+	{
+		int sum = 0;
+		for (int i = 0; i < i1; i++)
+		{
+			sum += i;
+			if (i % 1000 == 0)
+			{
+				await Task.Yield();
+			}
+		}
+		return sum;
+	}
+
+}·
+
+
+BackGroundWorker类
+
+
+并行循环
+	BCL的一个类库 - 任务并行库
+	Parallel.For
+	Parallel.Foreach
+
+	public static ParallelLoopResult.For(int fromInclusive,int toExclusive,Action Body);
+	迭代系列的第一个整数；
+	迭代系列最后一个索引号大1的整数
+	接受委托
+
+	e.g.
+	Parallel.For(0, 15, i => Console.WriteLine($"The square of {i} is {i * i}"));
+
+
+	public ParallelLoopResult ForEach<TSource>(IEnumerable<TSource> source,Action<TSource> body)
+	e.g,
+	string[] squares = new string[] { "We", "Are", "Animals" };
+	Parallel.ForEach(squares, i => Console.WriteLine($"{i} has {i.Length} letters"));
+	
+
+BeginInvoke/EndInvoke
+	调用BeginInvoke，开始在独立线程上执行引用方法，之后立即返回到原始线程；
+	原始线程可以继续，而引用方法可以在线程池的线程中并行执行；
+	
+	当程序希望获取已完成的异步方法的结果时，可以检查BgeinInvoke返回的IAsyncResult
+	的IsCompleted属性，或调用委托的EndInvoke方法等待委托完成
+	
+异步方法调用的三种模式：
+wait-until-done 
+	发起异步方法以及做了一些其他处理之后，原始线程就中断并且等异步方法完成之后再继续；
+
+polling(轮询)
+	isCompleted
+	原始线程定期检查发起的线程是否完成，没有则可以继续做一些其他的事情；
+	
+callback
+	原始线程一直执行，无需等待或检查发起的线程是否完成；
+	发起的线程中的引用方法完成之后，发起的线程会调用回调方法，
+	由回调方法在调用EndInvoke之前处理异步方法的结果
+
+
+AsyncResult
+	调用委托对象的BeginInvoke方法，系统创建一个AsyncResult对象；
+	返回对象中包含的IAsyncResult接口的引用
+	
+	
+计时器
+	计时器在每次到期之后调用回调方法，回调方法必须是TimeCallback委托形式
+	void TimerCallback(object state)
+	
+	计时器到期之后，系统会在线程池中的一个线程上设置回调方法，提供state对象作为参数
+	
+	e.g.
+	int TimesCalled = 0;
+	void disPlay(object state)
+	{
+		Console.WriteLine($"{(string)state} {++TimesCalled}");
+	}
+	
+	Program p = new Program();
+	Timer timer = new Timer(p.disPlay, "abc", 2000, 1000);
+	Console.WriteLine("Time Started");
+	Console.ReadLine();
+
+
+
+【命名空间和程序集】
+类库 - 程序集文件的名称通常是.dll拓展名结尾
+
+mscorlib库 - 包含console类的库
+
+命名空间 - 共享命名空间名的一组类和类型
+
+命名空间可以嵌套
+namespace my1
+{
+	namespace my2
+	{
+	
+	}
+}
+
+或
+
+namespace my1{}
+namespace my2{}
+
+
+using指令
+	using命名空间指令
+	using别名指令
+		using bieming = system;
+	using static指令 
+		引用给定命名空间中的特定类、结构体或枚举
+	   （被继承的成员不会被导入，指定的类可以不是静态的）
+	   
+	
+
+程序集的结构
+	不包含本地机器代码，
+	包含公共中间语言代码
+	包含JIT(即时编译器)在运行时将CIL转换为本机代码所需的一切
+	包含对其他程序集的引用
+	文件拓展名通常为.exe或.dll
+	
+	大部分程序集由一个单独文件构成
+		清单
+			程序集标识符 - 简单名称，版本号，文化信息和公钥
+			组成程序集的文件列表
+			一个指示程序集中内容在哪里的地图
+			关于引用的其他程序集的信息
+		类型元数据
+			包含该程序集中定义的所有类型的信息
+		CIL部分
+			包含程序集的所有中间代码
+		资源部分
+			可选，可包含图形或语言资源
+		
+		
+	程序集代码文件 - 模块
+	对于多个模块的程序集 - 一个文件为主模块，其他的次要模块
+		主模块包含程序集的清单和到次要模块的引用
+		次要模块的文件名以拓展名.netmodule结尾
+		多文件程序集被视为一个单元，一起部署发版
+		
+	
+	程序集标识符
+		简单名称
+			不带文件拓展名的文件名
+		版本号
+			由四个句号分割的整数组成
+			2.0.35.9
+		文化信息
+			一个字符串，由2~5个字符组成
+			en-US
+		公钥
+			128字节字符
+			
+			
+	强命名程序集
+		有一个唯一的数字签名
+		标识了程序集，其他人无法创建同名的程序集；
+		若没有CLR安全组件来捕获更改，程序集内容不能改变；
+		强命名程序集默认只能访问其他强命名程序集
+		
+	弱命名
+		没有数字签名
+		
+	创建强命名程序集
+		strongname工具
+	
+	
+	
+私有程序集的部署
+	私有程序集
+		应用程序不需要其他程序及，或所需的DLL在同一目录下，这种方法部署的程序集
+		这种部署方法成为复制文件XCopy
+	私有程序集所在的目录称为应用程序目录
+	可以是强命名也可以是弱命名
+	
+	
+共享程序集和GAC
+	全局程序集缓存(GAC)
+		DLL放在中心位置，副本被系统中其他的程序集共享
+	共享程序集 - 放入GAC的程序集
+	
+	只有强命名程序集能被添加到GAC
+	GAC位于Windows\Microsoft.NET\assembly中
+	
+	将程序集安装到GAC
+		CLR安全组件会先校验程序集上的数字签名是否有效
+		gacutil.exe命令行工具允许GAC添加或删除程序集
+		
+		
+	GAC内的并肩执行
+		不同的应用程序在同一时间使用不同版本的同一DLL
+		(标识符或公钥等区别)
+	
+	
+配置文件
+	由XML代码组成，含有关于应用程序的信息，供CLR在运行时使用
+	拓展名.config
+	
+
+延迟签名
+	或称部分签名
+	没有释放对私钥的访问，修改了分配强命名的形式
+	编译器只使用公钥，将公钥放入清单，使用一个内容为0的块保留数字签名的位置
+	
+	创建密钥文件的副本，只有公钥而不是公钥/私钥对；
+	为程序集范围内的源代码添加一个DelaySignAttribute的附加特性，值设为true
+		
+		
+		
+【异常】
+运行时错误，违反系统或应用程序约束
+
+try语句
+	try块
+		包含避免出现异常而被保护的代码
+	catch子句
+		可嵌套catach子句，异常处理程序
+	finally
+		在所有情况下都执行的代码，无论有没有发生异常
+	
+	
+异常类
+	BCL定义类许多异常类；
+	异常发生时，CLR创建该类型的异常对象并寻找适当的catch子句处理它
+	所有异常均派生于System.Exception
+	
+	异常只包含只读属性
+		Message - 解释异常的错误信息
+		StackTrace - 异常发生的堆栈信息
+		InnerException - 包含前一个异常的引用
+		Source - 若没有异常设定，这个属性含有一场所在的程序集的名称
+		
+catch子句
+	catch{}
+		无参，匹配try块中抛出的任何类型的异常
+	catch(ExcepetionType){} 
+		以一个异常类的名称作为单一参数，匹配任何指定类型的异常
+	catch(ExcepetionType variable){}
+		异常变量引用异常对象，可访问关于该对象的信息
+	catch(ExcepetionType variable)
+	when(predicate){}
+		只有当计算结果为true，才会进入子句块
+		例如根据状态码不同处理HttpRequestExcepetion
+		无论可能匹配多少个子句，都只执行第一个匹配成功的子句
+		
+	catch子句可以包含多个catch子句
+	
+	规则：
+		catch子句必须以一种顺序排列，最特定的异常类型第一，最普通的类型最后；
+		若有一个一般catch子句，必须放在最后
+		
+		
+finally块
+	try块内部未发生异常，控制流跳过catch子句并到finally块
+	try块发生异常，catch子句段执行，接着执行finally块
+	即使try块中有return语句，或在catch中抛出异常，也会在return之前执行
+	
+若try块中调用另一个方法(也有try块)，异常从内向外弹出
+
+
+抛出异常
+	throw 使代码显示地抛出异常
+	throw表达式
+	
+
+
+【预处理指令】
+指示编译器如何处理源代码
+	
+基本法则
+	预处理指令必须和C#代码在不同的行
+	不需要以分号结尾
+	每一行必须以#字符开始
+		#字符前可以有空格
+		#字符和指令之间可以有空格
+	允许行尾注释
+	预处理指令所在的行不允许有分隔符注释
+	
+
+#define 和 #undef
+	编译符号
+	只能用在源文件的第一行，任何c#代码之前
+	#define abc
+	可以在下面的代码中使用它:
+		#if abc
+		
+		
+条件编译
+	允许根据某个编译符号是否被定义标注一段代码被编译，或跳过
+	#if
+	#else
+	#elif
+	#endif
+	
+	
+诊断指令
+	产生用户自定义的编译时警告及错误信息
+	#warning Message
+	#error Message   - 在if结构中使用
+	
+	
+行号指令
+	改变由编译器警告和错误消息报告的出现行数   - #line 111
+	改变被编译源文件的文件名				   - #line "filename"
+	对交互式调试器隐藏一些行				   - #line hidden / #line
+	
+	重新保存实际的行号和文件名                 - #line default
+	
+	
+区域指令
+	#region
+	#endregion
+	区域指令可以嵌套
+	
+	
+#pragma warning指令
+	可以关闭及重新开启警告消息
+	#pragma warning disable 618,14
+	#pragam restore 618
+	#pragma warning disable - 所有警告消息在这段代码中处理关闭状态
+	#pragma warning restore
+	
+
+【反射和特性】
+
+元数据和反射
+	metadata - 有关程序及类型的数据，保存在程序的程序集中；
+	反射 - 程序运行时，可以查看其他程序集或本身的元数据
+	
+Type类
+	抽象类，包含类型的特征
+	CLR不会返回派生类的引用，而是返回Type类的引用
+	
+对于程序中用到的每一个类型，CLR都会创建一个包含该类型的类型信息的Type类型对象
+不管创建的类型有多少实例，Type对象会关联这些实例
+
+Type类的部分成员：
+	Name
+	NameSpace
+	Assembly - 程序集
+	GetFields - 返回类型的字段列表
+	GetProperties - 返回类型的属性列表
+	GetMethods - 返回类型的方法列表
+	
+获取Type对象
+	GetType() - Object类型包含了的实例方法
+	typeof运算符 - 返回Type对象的引用
+	区别：
+		GetType,变量使用；typeof必须是类型
+		
+		
+特性
+	向程序集添加元数据的语言结构，
+	用于在运行时传递程序中各种元素（比如类、方法、结构、枚举、组件等）的行为信息的声明性标签
+	声明特性带后缀Attribute，应用特性可以不使用后缀；
+
+	Obsolete 
+		编译时产生CS0618警告信息
+		[Obsolete("寄咯")]
+		[Obsolete(null,true)] - 设为错误
+		
+	Conditional
+		允许包括或排斥特定方法的所有调用
+		方法必须是类/结构体，void类型，不能标记为virtual
+		[Conditional("DEBUG")] - 检测有没有预处理指令"DEBUG"，没有忽略
+	调用者信息特性
+		利用该特性可以访问文件路径、代码行数、调用成员的名称等源代码信息
+		CallerFilePath、CallerLineNumber、CallerMemberName
+		public static void Main(string[] args)
+        {
+            Method1(fileName:"222");
+        }
+
+        static void Method1([CallerFilePath] string fileName = "", [CallerLineNumber] int lineNumer = 0, [CallerMemberName] string MemberName = "") 
+        { 
+            Debug.WriteLine(fileName);
+            Debug.WriteLine(lineNumer);
+            Debug.WriteLine(MemberName);
+        }
+		调用时可以指定值，否则输入系统默认值
+	[DebuggerStepThrough]
+		可用于类、结构、方法、属性、构造函数
+		跳过调试
+	[Serializable]
+	[NonSerialized]
+    [AttributeUsage]
+		[AttributeUsage
+		(AttributeTargets.Class, 
+		AllowMultiple = false, 
+		Inherited = false)]
+	
+	
+	多个特性
+		两种方式：
+		[1]
+		[2]
+		
+		或
+		[1,2]
+		
+	显示目标说明符：       
+		[property:Obsolete]
+		public class myclass
+		{
+			public int Id { get; set; }
+		}
+		
+	全局特性：
+		AssemeblyInfo.cs
+		[assembly:System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
+		
+		
+	
+	
+	自定义特性
+		特性是一种特殊的类
+		若应用特性的公共构造函数没有参数，可以省略圆括号
+		特性的构造函数可以使用位置参数和命名参数
+		
+		
+	isDefined - 判断特性是否应用到类上
+		public class Program
+		{
+			public static void Main(string[] args)
+			{
+				MyClass mc = new MyClass();
+				bool id = mc.GetType().IsDefined(typeof(FirstAttribute),false);
+				if (id)
+				{
+					Debug.WriteLine(mc.GetType().Name);
+				}
+			}
+		}
+
+
+		[AttributeUsage(AttributeTargets.Class)]
+		public sealed class FirstAttribute : Attribute
+		{
+			public FirstAttribute(string name)
+			{
+
+			}
+		}
+
+		[First("noName")]
+		class MyClass
+		{
+
+		}
+		
+		
+	GetCustomAttributes
+	
+	
+【C#6.0和7.0新增】
+字符串插值
+表达式函数体 
+using static - 用在枚举上
+空条件运算符 int?
+catch和finally中使用await
+nameof运算符
+异常过滤器 try...catch...when
+
+
+【其他】
+字符串
+	Unicode数组
+	不可变
+Concat/Join
+Split - 传规则数组 进行分隔字符串
+
+StringBuilder类
+	变量.toString
+	
+Parse/TryParse
+
+可空类型属性  - HasValue
+空接合运算符 ??
+空条件运算符 - 结合委托 ?.Invoke
+
+嵌套类
+	默认private
+	总是可以完全访问密封类
+	需要访问封闭类，需持有封闭类的引用
+	mn = new myclass(this)
