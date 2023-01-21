@@ -1,0 +1,1733 @@
+数据库管理的三个阶段：
+1.人工管理阶段（1950s中期之前）
+数据不保存、不共享、不具有独立性
+使用应用程序管理数据
+2.文件系统阶段（1950s后期到60s中期）
+数据可以长期保存
+由文件系统管理数据
+共享性差，数据冗余大
+数据独立性差
+3.数据库系统阶段（1960s以后）
+
+数据库系统组成：
+用户 
+应用系统（软件）
+应用开发工具（硬件）
+数据库管理系统
+数据库管理人员
+数据库（数据）
+
+数据库体系结构（三级模式结构）
+1.模式（逻辑模式/概念模式）
+对数据库全体数据的逻辑结构和特征的描述；
+所有用户的公共数据视图
+处于三级结构的中间层
+一个数据库只有一个模式
+2.外模式（用户模式）
+数据库用户能够看见和使用的局部数据的逻辑结构和特征的描述
+外模式是模式的子集
+一个模式可以有多个外模式
+3.内模式（存储模式）
+数据库物理结构和存储方式的描述
+数据在数据库内部的表示方式
+一个数据库只有一个内模式
+
+关系数据库的规范化
+NF - Normal Form
+第一范式：在一个关系中，消除重复字段，且各字段都是最小的逻辑存储单位；
+第二范式：第一范式的基础上，关系中每一个非关键字段都完全依赖于主关键字段。
+不能只部分依赖于主关键字的一部分；
+第三范式：在第一、二范式的基础上，去除传递依赖
+
+实体与关系：
+一对一
+一对多
+多对多
+
+常见关系型数据库
+Acess数据库
+SQL Server数据库
+Oracle数据库
+MySQL数据库
+
+服务器组 - 对已注册的服务器进行分组化管理
+DDL - Data Definition Language
+
+关系数据库 - 支持关系模型的数据库
+1.关系数据结构
+数据结构单一，二维表
+2.关系操作集合
+关系代数、关系演算、语言
+3.完整性约束
+实体完整性、参照完整性、用户定义的完整性
+
+数据库常用对象
+1.表
+2.字段
+3.索引 单独的，物理的数据库结构
+4.视图 从一张或多张表中导出的表（虚拟表）
+5.存储过程 为了完成特定功能的SQL语句集合
+经编译后存储在SQL SERVER服务器端的数据库中
+用户通过指定存储过程过的名字来执行
+
+数据库组成 - 文件 + 文件组
+1.文件
+主要数据文件 - 存放数据和数据库的初始化信息，每个数据库有且只有一个主要数据文件，拓展名为.mdf
+次要数据文件 - 存放主要数据文件以外的所有数据文件，可能没有或有多个，拓展名为.ndf
+事务日志文件 - 存放该用户恢复数据库的所有日志信息，至少一个或有多个，拓展名为.ldf
+2.文件组
+一种逻辑管理单位，将数据库文件分成不同的文件组，方便于对文件的分配和管理
+主文件组 - 包括数据文件和任何没有明确指派给其他文件组的文件，系统表的所有页分配在主文件组中
+用户定义文件组 - 主要在CREATE DATABASE 或ALTER DATABASE 语句中，使用FILEGROUP关键字指定的文件组
+
+对文件进行分组时，要遵循一些设计原则：
+1.文件只能是一个文件组的成员
+2.文件或文件组不能由一个以上的数据库使用
+3.数据和事务信息不能属于同一文件或文件组
+4.日志文件不能作为文件组的一部分，日志空间与数据空间分开管理
+
+系统数据库
+1.master数据库 - 记录SQL SERVER实例的所有系统级信息，包含实例范围的元数据、端点、链接服务器和系统配置设置；
+2.tempdb数据库 - 临时数据库，保存临时对象或中间结果集
+3.model数据库 - 用作SQL SERVER实例上创建的所有数据库的模板，对model数据库进行的操作（数据库大小、排序规则等）
+会应用于以后创建的所有数据库
+4.msdb数据库 - 用于SQL SERVER代理计划警报和作业
+
+命名规则
+1.标识符
+a.首字母必须是下列字符之一： 
+Unicode2.0标准中定义的字母，a~z，A~Z，以及其他语言的字符
+下划线 _ 符号 @ 数字符号 #
+@符号打头表示局部变量或参数
+#打头表示临时表或者过程
+##打头表示全局临时对象
+b.后续字符可以是以下3种：
+Unicode2.0标准中定义的字母
+来自拉丁字母或其他国家/地区脚本的十进制数字
+@,$，# _
+c.标识符不允许是T-SQL的保留字
+d.不允许嵌入空格或其他特殊字符
+2.标识符分为以下两类
+常规标识符 - 符合标识符的格式规则
+分隔标识符 - 包含在"" 或者 []内的标识符，可以不符合标识符的格式规则
+
+对象命名规则
+server.database.owner_name,object_name
+当引用一个对象时，不需要指定服务器、数据库和所有者，可以利用句号标出它们的位置：
+server.database..object_name
+不允许存在4部分完全相同的数据库对象
+
+基本数据类型
+整数数据类型 - 存储整数或者小数
+BIT INT SMALLINT TINYINT
+货币数据类型 - 存储货币值，不加货币符号默认为¥
+MONETY SMALLMONEY
+浮点数据类型 - 存储十进制小数
+REAL FLOAT DECIMAL NUMERIC
+日期/时间数据类型 存储日期类型和时间类型的组合数据
+DATETIME SMALLDATETIME DATE DATETIME(2) DATETIMESTAMPOFFSET
+字符数据类型 - 存储各种字母、数字符号和特殊符号 
+CHAR NCHAR(n) VARCHAR NVARCHAR(n)
+二进制数据类型 - 存储二进制数据
+BINARY VARBINARY
+图像和文本数据类型 - 存储大连过的字符及二进制数据(BINARY DATA)
+TEXT NTEXT(n) IMAGE
+
+用户自定义数据类型
+并不是真的数据类型，能够简化对常用规则和默认值的管理
+管理器创建/SQL语句创建
+EXEC sp_addtype typename,'sysyem_data_type','null_type'
+
+数据完整性 - 列中每个事件都有正确的数据值，且数据类型必须正确，数据值必须在正确的域中
+引用完整性 - 表之间的关系得到正确维护，一个表的数据指向另一张表的现有行，不应指向不存在的行
+1.NULL/NOT NULL 默认值为NULL值
+2.默认值 CREATE TABLE中使用DEFAULT关键字创建默认定义
+3.特定标识属性(IDENTITY) 通常设置为主键 适用于INT/SMALLINT/TINYINT/DECIMAL(P,0),UMERIC(P,0)的列
+一个列不能同时具有NULL属性和IDENTITY属性
+4.约束 使用约束优先于使用触发器、规则和默认值
+非空 NOT NULL 每个表中可以有多个非空约束
+检查 CHECK 用来指定一个布尔操作，限制输入到表中的值
+唯一性 UNIQUE 指定输入列中的值不能重复，但可以为空
+主键 PRIMARY KEY 一个表只能有一个主键，同时主键中的列不能接受空值
+外键 FOREIGEN KEY 用于建立和加强两个表数据之间的链接的一列或多列
+
+操作数据表
+界面方式 - 表设计/SQL语句
+
+表列基础：
+创建表
+CREATE TABLE [dbo].[TEST](
+	[ID] INT NOT NULL,
+	[NAME] VARCHAR(50),
+	[AGE] INT
+)
+添加列
+ALTER TABLE dbo.TEST
+ADD Sex char(2)
+删除列
+ALTER TABLE db_Test..dbo.Test
+DROP COLUMN Sex
+删除表
+DROP TABLE [db_test].[dbo].[dbo.test]
+插入列数据
+INSERT INTO  dbo.TEST
+(ID,NAME,AGE)
+VALUES(1,'陈磊',24)
+修改列数据
+UPDATE db_test..TEST
+SET ID = 2
+删除行
+DELETE FROM db_test..TEST
+WHERE ID = 2
+
+约束相关： 约束是自动强制数据完整性的一种方式，通过定义列的取值规则来维护数据的完整性
+非空约束
+创建表添加 -  CONSTRANINT 约束名 NOT NULL
+现有表添加 - 	ALTER TABLE Exercise
+		
+		Sex Char(4) NOT NULL	
+主键约束 
+通过定义PRIMARY KEY约束来创建主键，一个表只能有一个主键约束，且主键约束中的列不能接受空值
+创建表添加 - 	CREATE TABLE EXERCIESE2(
+				ID INT CONSTRIANT PK_ID PRIMARY KEY,
+				NAME VARCHAR(20),
+				SEX CHAR(20)
+				)
+现有表添加 - 	ALTER TABLE Exercise
+				ADD CONSTRAINT PRIMARYKEY_ID PRIMARY KEY(ID) 
+同个数据库中约束名不能重复
+若要修改主键约束，必须先删除主键约束才能重定义
+删除主键约束 -	ALTER TABLE Exercise
+				DROP CONSTRAINT PRIMARYKEY_ID
+唯一约束
+UNIQUE 强制实施列集中值得唯一性，表中任何两行都不嫩个存在相同的列值；
+主键也强制实施唯一性，但不允许NULL作为一个唯一值
+创建表添加 - 	CREATE TABLE Exercise3(
+				 ID INT,
+				 Name Varchar(10),
+				 Sex Char(5) CONSTRAINT UQ_ID UNIQUE,
+				 Age int 
+				)
+现有表添加 - 	ALTER TABLE Exercise
+				ADD CONSTRAINT UQ_Sex UNIQUE(Sex)
+删除唯一约束 -  ALTER TABLE Exercise
+				DROP CONSTRAINT UQ_Sex
+检查约束
+CHECK 可以控制放入列中的值
+创建表添加 - CREATE TABLE Exercise4(
+				 ID INT,
+				 Name Varchar(10),
+				 Sex Char(5) CONSTRAINT CK_Sex CHECK(sex in('男','女')),
+				 Age int 
+				)
+现有表添加 -	ALTER TABLE Exercise3
+				ADD CONSTRAINT CK_SexFemale CHECK(Sex = '女')
+删除检查约束 -  ALTER TABLE Exercise3
+				DROP CONSTRAINT CK_SexFemale
+默认约束
+创建表添加 - 	CREATE TABLE Exercise5(
+				 ID INT,
+				 Name Varchar(10),
+				 Sex Char(5) CONSTRAINT Default_Sex DEFAULT'女',
+				 Age int 
+				)		
+现有表添加 -	ALTER TABLE Exercise5
+				ADD CONSTRAINT DEFAULT_Age DEFAULT'30' for Age
+删除默认约束 -  ALTER TABLE Exercise5
+				DROP CONSTRAINT DEFAULT_Age
+外键约束 
+FOREIGEN KEY 当一个表的列被引用作为另一个表的主键值的列时，这个列就成为了第二个表的外键
+创建表添加 - CREATE TABLE HumanBeings(
+				ID INT,
+				Wage MONEY,
+				CONSTRAINT FK_ID FOREIGN KEY(ID) REFERENCES Exercise5(ID)
+			)
+FOREIGEN KEY中的ID 是 REFERENCES 表的ID
+现有表添加 -   ALTER TABLE Exercise
+			   ADD CONSTRAINT FOREIGNKEY_ID FOREIGN KEY(ID) REFERENCES Exercise5(ID)
+删除外键约束 - ALTER TABLE Exercise
+			   DROP CONSTRAINT FOREIGNKEY_ID
+			   
+一对一关系
+表A的一条记录在表B有且只有一条相匹配的记录
+如果两个相关列都是主键或具有唯一约束，创建的就是一对一关系
+一对多关系
+表A的行可以在表B有许多匹配行，但是表B的行只能在表A匹配一条
+如果相关列只有一列是主键或者具有唯一约束，创建的就是一对多关系
+多对多关系
+每个表的行在相关表中有多个匹配行，多对多关系依靠第三个表连接实现
+连接表包含相关的两个表的主键列，然后从主键列分别创建与连接表匹配列的关系
+商品信息表 - 商品订单表 --> 商品订单信息表
+存储过程 exec sp_help '表名' 查看表的相关信息
+
+T-SQL概述
+标准的微软SQL-Server的拓展
+由以下三个部分组成：
+1.数据定义语言 DDL  对数据库、表、视图、索引等数据库对象进行创建和管理
+2.数据控制语言 DCL	对数据库的数据完整性、安全性等的控制
+3.数据操纵语言 DML	用于插入、修改、删除和查询数据库中的数据
+关键字不区分大小写
+
+【常量】
+数字常量
+包括整数常量、小数常量以及浮点常量
+整数和小数常量编写为小数数字，前面可加正负号 12，-40
+浮点常量使用符号e来指定	1.5e3，-3.14e1
+
+字符串常量
+括在单引号内并包含字母和数字字符以及特殊字符
+如果单引号的字符串包含一个嵌入的引号，可以使用两个单引号表示嵌入的单引号
+
+日期和时间常量
+根据国家不同，书写方式也不同
+美国：mm/dd/yyyy
+欧洲：dd.mm.yyyy
+日本：yyyy-mm-dd
+
+符号常量
+代表不同的常用数据值
+CURRENT_DATE 表示当前的日期
+符号常量可以通过SQL SERVER的内嵌函数访问
+
+【变量】
+局部变量
+作用范围仅在程序内部，名称为用户自定义，以@开头
+DECLARE @songname char(10)
+为局部变量赋值：
+第一种：
+DECLARE @money int  
+SELECT @money = Wage from dbo.HumanBeings where ID = 100
+print @money   //打印出来
+第二种：
+DECLARE @qian int
+SET @qian = 100
+可以为多个变量一起赋值
+
+全局变量
+SQL Serever系统内部定义好的变量，
+一共提供了30多个全局变量，都是以@@开头
+@@connections 记录自最后一次服务器启用以来，所有的连接次数，包括失败的情况
+@@CUP_BUSY 记录自上次启动以来，包含失败情况，CPU工作时间，单位ms
+@@DBTS	返回当前数据库中timestamp数据类型的当前值
+@@VERSION 返回当前SQL Server服务器安装日期、版本以及处理器的类型
+
+【注释符、运算符与通配符】
+注释符 
+-- 注释ctrl+k+c  取消ctrl+k+u
+
+运算符 
+算术运算符
++ - * / %
+declare @X int,@y int,@z int
+select @X = 100, @y =50
+set @z =@X * @y
+print @z
+ 
+赋值运算符
+=
+
+比较运算符
+>  <  =  >=  <=  <> 
+结果有三种：TRUE FALSE UNKNOWN
+
+逻辑运算符
+返回TRUE/FALSE
+ALL AND ANY
+BETWEEN EXISTS IN
+LIKE	NOT	  Or
+SOME
+例子：
+IF NOT EXISTS/ IF EXISTS
+grouping sets
+
+位运算符
+& 按位and
+| 按位or
+^ 按位互斥or
+~ 按位MOT
+
+字符串连接运算符
++
+
+运算符优先级
+先乘除后加减
+括号内的表达式优先级最高
+相同优先级从左向右处理
+
+通配符
+%	包含0或多个任意字符	loving%
+_	任何单个字符	loving_
+[]	指定范围中的任何单个字符 [0~9]123
+[^]	不属于指定范围中的额任何单个字符 [^0~5]123
+
+
+【流程控制】
+BEGIN...END
+将多个T-SQL语句组合成一个逻辑块，可嵌套
+DECLARE @X INT, @Y INT, @Z INT
+SET @X = 1
+SET @Y = 2
+BEGIN 
+SET @Z = @X
+SET @X = @Y
+SET @Y = @Z
+END
+PRINT @X
+PRINT @Y
+
+IF
+DECLARE @X INT
+SET @X = 3
+IF @X<0
+PRINT '@X 是正数'
+print 'END'
+如果条件为真，执行后面的命令块，否则跳过，执行下一条语句
+
+IF...ELSE
+
+CASE
+使用CASE可以避免多重的IF...THEN嵌套循环
+select * ,
+备注 = CASE
+WHEN Grade >90 THEN '成绩优秀'
+WHEN Grade<90 AND Grade>=80 THEN '成绩良好'
+WHEN Grade<80 AND Grade>=70 THEN '成绩几个'
+ELSE '不及格'
+END 
+FROM DBO.GRADE
+
+WHILE
+若想执行一组命令，需配合BEGIN...END语句
+declare @n int,@sum int
+set @n =1
+set @sum = 0
+while @n<=10
+begin
+set @sum = @sum + @n
+set @n = @n+1
+end
+print @sum
+
+WHILE...CONTINUE...BREAK
+continue跳过continue命令之后的语句，回到while循环的第一行命令
+break直接跳出循环
+declare @n int,@sum int
+set @n =1
+set @sum = 0
+while @n<10
+begin
+set @n = @n+1
+if @n%2 =0
+set @sum = @n+@sum
+else 
+continue
+end
+print @sum
+
+RETURN
+RETURN[整数]
+如果没有指定返回值，程序将返回一个内定值
+F 程序执行成功
+-1 找不到对象
+-2 数据类型错误
+-3 死锁
+...
+
+GOTO
+GOTO 标识符
+标识符需要在其名称之后加一个冒号
+declare @x int
+select @x=1
+ggggg:
+print @x
+select @x = @x+1
+while @x<=3 goto ggggg
+
+WAITFOR
+指定触发器、存储过程或事务执行的事件、时间间隔或事件；
+还可以用来暂时停止程序的执行，直到所设定的等待时间已过才继续往下执行
+WAITFOR DELAY '00:00:03'
+PRINT '祝你节日快乐'
+//
+WAITFOR TIME '08:20:00'
+PRINT '快要上班了'
+
+【常用命令】
+DBCC
+数据库一致性检查程序
+用于验证数据库完整性、查找错误和分析系统使用情况等
+
+DBCC CHECKALLOC('db_test')		检测数据库磁盘分配结构
+
+DBCC SHOWCONTIG			显示指定表的数据和索引的碎片信息
+
+CHECKPOINT(checkpoint_duration)	检查当前工作的数据库中被更改过的数据也或日志页
+
+DECLARE 					声明一个或多个变量
+定义一个变量  declare @x int
+定义一个字符型变量 declare @c char(8) 默认系统长度为1
+定义多个变量，中间用逗号相隔
+
+PRINT 	显示字符串最大值为255个字符
+
+RAISERROR  返回错误信息同时返回用户指定的信息
+
+READTEXT    读取TEXT，ntext，或image列中的值，从指定位置开始读取指定的字符数
+
+BACKUP
+BACKUO DATABASE db_test to disk='backup.bak'
+
+RESTORE 
+还原数据库 
+RESTORE DATABASE db_test from disk=‘backupbak'’with replace
+
+SELECT
+查询功能或者给变量赋值
+
+SET
+给局部变量赋值
+处理选项设定 ON/OFF
+
+SHUTDOWN 立即停止SQL SERVER的执行
+SHUTDOWN WIHT NO WAIT 
+
+WRITETEXT 
+对数据类型为text、ntext或image的列进行交互式更新
+
+USE
+使用数据库
+
+
+【聚合函数】
+对一组值进行计算并返回单一的值，通常与select和Group by语句一同使用
+在于Group by语句一起使用时，聚合函数会为每个组产生一个单一值
+
+SUM 求和函数
+只能用于数字列，空值会被忽略；
+all和distinct决定是否过滤重复值
+SELECT SUM(all Age) as 总年龄
+FROM Exercise5 
+SELECT SUM(distinct Age) as 总年龄
+FROM Exercise5 
+
+AVG 平均值函数
+忽略空值,all和distinct决定是否过滤重复值
+SELECT AVG(all Age) as 平均年龄
+FROM Exercise5 
+SELECT AVG(distinct Age) AS 平均年龄
+FROM Exercise5 
+
+MIN 最小函数
+distinct对于MIN无意义，使用它为了符合ISO标准
+SELECT MIN(Age) as 最小年龄
+FROM Exercise5 
+where Name <> ''
+
+MAX 最大函数
+distinct对于MAX无意义，使用它为了符合ISO标准
+SELECT MAX(Age) as 最大年龄
+FROM Exercise5 
+where Name <> ''
+
+COUNT 统计函数
+返回组中的项数，返回int类型
+distinct：指定返回唯一非空值的数量
+Count(*) 不能与distinct一起使用，不需要任何参数
+	SELECT SEX,COUNT(SEX) AS 人数 FROM Exercise5
+	GROUP BY Sex
+	
+    SELECT COUNT(*) AS 总人数 FROM Exercise5
+	
+DISTINCT 函数
+对指定的集求值，删除该集中的重复元素，返回结果集
+SELECT DISTINCT(AGE) FROM Exercise5
+
+HAVING 查询重复记录
+结合SELECT 语句一起使用，通常在group by子句中使用
+SELECT AGE,COUNT(AGE) AS 重复年龄 FROM Exercise5
+GROUP BY Age
+HAVING COUNT(Age) >1
+
+【数学函数】
+返回值为6位小数，如果使用出错，返回null并显示提示信息
+
+ABS 绝对值函数
+SELECT ABS(-3.14) AS '3.14的绝对值'
+
+PI 圆周率函数
+返回PI的常量值，返回类型为float类型
+SELECT PI() AS '圆周率'
+
+POWER 乘方函数
+参数的计算结果必须为整数
+SELECT POWER(2,3) AS '2的3次幂'
+
+RAND 随机浮点数函数
+返回0~1的随机float值
+SELECT RAND()*100
+
+ROUND 四舍五入函数
+SELECT ROUND(3.14159,2)
+
+SQUARE 平方函数
+SELECT SQUARE(4) AS '4的平方'
+
+SQRT 平方根函数
+SELECT SQRT()
+DECLARE @mysqrt float
+set @mysqrt = 1.00
+while @mysqrt<10.00
+begin
+ select sqrt(@mysqrt)
+ select @mysqrt = @mysqrt+1
+end
+
+COS函数 余弦
+COT函数 余切
+SIN 函数 正弦
+TAN函数 正切
+
+【字符串函数】
+ASCII函数 获取ASCII码函数
+	select ASCII('N')
+
+CHARINDEX 返回字符串的起始位置 函数
+SELECT CHARINDEX('位置','返回字符串的起始位置')
+要查找的字符串，查询的字符串，起始位置
+	SELECT CHARINDEX('流程控制',sub_content)as '起始位置'
+	from Project_SandGrains
+	-- where date = '2022-07-11'
+	where link = 'SQL Server从入门到精通 第三版'、
+
+LEFT/RIGHT 取左边/右边指定个数的函数
+	SELECT LEFT(Name,1) AS '姓氏' ,COUNT(LEFT(Name,1))
+	from Exercise5 
+	group by LEFT(Name,1)
+
+	SELECT RIGHT(ID,2) AS '编号',name,sex
+	from Exercise5
+
+LEN 返回字符个数，计算空格
+SELECT LEN('我 是 字 符 串')
+
+
+Replace 替换字符串函数
+	SELECT REPLACE(Name,'陈磊','陈石')
+	AS '名称'
+	FROM [db_test].[dbo].[Exercise5]
+
+	UPDATE [db_test].[dbo].[Exercise5] SET Name = REPLACE(Name,'磊','三石')
+
+
+Reverse 反转字符串函数
+	UPDATE [db_test].[dbo].[Exercise5] SET Name = REVERSE(Name) where Name = '陈三石'
+	
+STR 函数 返回由数字转换的字符数据
+	STR([1],[2],[3])
+	[1]	float表达式 
+	[2]	length,字符串总长度，包括符号空格，默认10
+	[3]	decimal，要包含的小数点后的位数，大于16会截断位数
+	若length小于字符串长度，返回**，为字符串长度
+
+
+SUBSTRING 截取函数
+	SELECT Name,SUBSTRING(NAME,1,1) AS '姓'
+	FROM [db_test].[dbo].[Exercise5]
+
+【日期和时间函数】
+GETDATE	返回系统的当前时间
+	GETDATE()，返回长度为29个字符
+
+DAY 返回指定日期的天 
+	DAY(GETDATE())
+	
+MONTH 返回指定日期的月
+	MONTH(getdate())
+	
+YEAR 返回指定日期的年
+	YEAR(getdate())
+	
+DATEDIFF 返回日期和时间的边界
+	SELECT DATEDIFF(DAY,'2021-10-1',GETDATE())
+	
+DATEADD 添加日期
+	SELECT DATEADD('MONTH',1,GETDATE)
+	
+【转换函数】
+CAST
+	SELECT CAST('MOYUXIA' AS NVARCHAR(10))
+	
+CONVERT
+	SELECT CONVERT(DATETIME,GETDATE(),126)
+	
+【元数据函数】
+	返回数据库中的相应信息
+
+COL_LENGTH
+	返回列的定义长度
+	SELECT COL_LENGTH('table','column')
+	
+COL_NAME
+	返回列的名称
+	COL_NAME(TABLE_ID,COLUMN_ID)
+	TABLE_ID 为数据库列中标的标识号，colummn_id为列的标识号
+	SELECT COL_NAME(OBJECT_ID('Exercise5'),1)
+
+DB_NAME 
+	返回数据库名称
+
+DB_ID 
+	返回数据库标识号
+	
+sysobjects object_id
+
+补充：
+STUFF() 删除指定长度的字符，并且插入字符
+	SELECT STUFF('abcdef',2,3,'opo')
+	
+	
+	
+* SELECT 数据查询基础
+【WITH 子句】
+指定临时命名的结果集，统称为公用表表达式(CTE)
+如果定义了多个CTE，必须用UNION、EXCEPT这类集合运算符连接起来
+WITH...AS 又称为子查询部分，即查即用，查完就会清除
+	  WITH AgeReps(Age,AgeCount) AS
+	  (
+		SELECT age,count(*) 
+		from Exercise5 
+		WHERE Age IS NOT NULL
+		GROUP BY Age
+	  )
+	  SELECT Age,AgeCount
+	  FROM AgeReps
+	  
+计算平均年龄：
+	  with avgages(age,counts) as
+	  (
+	  		SELECT age,count(*) 
+			from Exercise5 
+			WHERE Age IS NOT NULL
+			GROUP BY Age
+	  )
+	  select AVG(age) as '平均年龄' from avgages
+	  
+
+
+【SELECT...FROM 子句】
+部分参数：
+ALL			结果集可以包含重复行，默认值
+DISTINCT	结果集只能包含唯一行，null值都是相等的
+top 50 percent 查询百分比
+
+INTO 创建新表并将来自查询的结果插入新表
+SELECT NAME,AGE INTO COPY5 FROM Exercise5
+
+WHERE 子句
+逻辑运算符 - NOT,AND,OR
+	select * from [db_test].[dbo].[COPY5]
+	where not age>20
+	
+比较运算符
+	>
+	<
+	<>
+	
+LIKE关键字
+	%	匹配0或多个字符
+	_	匹配单个字符
+	[]	匹配指定范围内的单个字符
+	[^]	匹配不属于指定范围内的单个字符
+	
+(NOT)BETWEEN...AND... 关键字
+
+IS(NOT)	NULL 关键字
+
+(NOT)IN	关键字
+	SELECT * FROM Exercise5
+	WHERE ID NOT IN('001','002','003')
+	
+ALL/SOME/ANY 关键字
+	与比较运算符和子查询一起使用
+	SELECT * FROM EMPLOYEE
+	WHERE AGE>ALL
+	(
+		SELECT AGE FROM EMPLOYEE
+		WHERE NAME IN('ABC','DEF')
+	)
+	
+EXISTS 关键字
+	指定子查询，测试是否存在
+	SELECT ID,NAME, FROM EMPLOYEE
+	WHERE EXISTS(SELECT NULL)
+	
+	
+Group BY 子句
+	按一列或多列或表达式的值将一组选定行组合成一个摘要行集，针对每一组返回一行
+	SELECT  date,remark from[TheGrowthPath].[dbo].[Project_SandGrains]
+	group by date,remark
+	SELECT 子句必须包括在聚合函数或GROUP BY 子句当中
+	
+Having 子句	
+	Having只能与select语句一起使用
+	通常在GROUP BY 子句中使用
+	SELECT Age,Count(AGE) as R人数 FROM EMPLOYEE
+	Group BY AGE
+	HAVING COUNT(AGE) > 2
+	
+ORDER BY 子句
+	默认升序，DESC降序
+	SELECT * FROM EMPLOYEE
+	WHERE AGE>24
+	ORDER BY NAME DESC
+	
+DITINCT 关键字
+	SELECT DISTINCT AGE FROM EMPLOYEE
+	
+TOP 关键字
+	SELECT TOP 5* FROM EMPLOYEE
+	
+
+UNION 合并多个查询结果
+规则：
+1.两个select语句选择列表中的列数目必须一样多，且数据类型对应
+2.列的别名由第一个select语句的选择列决定
+3.order by语句必须放到最后一个select后面
+	select ID,SUBJECT FROM Grade
+	UNION 
+	SELECT ID,NAME FROM Exercise5
+	
+UNION ALL
+	加上关键字ALL不会删除重复行也不会进行自动排序
+	需要的计算资源少，尽可能使用它
+    SELECT * FROM Grade WHERE Subject = '语文'
+	UNION All
+	SELECT * FROM Grade WHERE Grade >=90
+	
+UNION 中的order by子句中使用
+	ORDER BY放在语句的末尾
+	
+UNION 中的自动数据类型转换
+	数据兼容即可
+
+
+
+【子查询】
+规则：
+SELECY查询使用圆括号括起来
+子查询最多嵌套32层
+任何可以使用表达式的地方都可以使用子查询，只要返回的是单个值
+如果某张表只出现在子查询中而不出现在外部查询中，那么该表中的列无法包含在输出中
+
+【嵌套查询】
+指将一个查询块嵌套在另一个查询快的where子句或having条件中的查询
+子查询中不能出现order by子句，只能用在最外层的查询块中
+先处理最内层的子查询，然后一层层向上处理，直到最外层的查询块
+
+简单的嵌套查询：
+	SELECT * FROM STUDENT
+	WHERE SNO = (SELECT SNO FROM SC WHERE GRADE>90)
+
+带IN/NOT IN的嵌套查询
+	子查询的结果必须适合外层插叙的语句，当子查询产生一系列值时，适合用带IN的嵌套查询
+	SELECT * FROM STUDENT
+	WHERE SNO IN(SELECT SNO FROM SC)
+	
+带Some/Any的嵌套查询
+	SELECT * FROM STUDENT
+	WHERE Sage<SOME(SELECT AVG(Sage) FROM STUDENT)
+
+带ALL的嵌套查询
+	SELECT * FROM Course
+	WHERE CNO<>ALL(SELECT CNO FROM SC WHERE GRADE > 90)
+
+带EXISTS的嵌套查询
+	只注重是否返回行，用带IN的嵌套查询也可以使用带EXITS的嵌套查询使用
+	SELECT * FROM STUDENT
+	WHERE EXISTS(SELECT * FROM SC WHERE STUDENT.SNO = SC.SNO)
+	
+
+【内连接】
+使用JOIN进行连接(两张表左右拼一块)
+	SELECT * FROM COPY5
+	JOIN Exercise5
+	ON COPY5.NAME =Exercise5.Name
+
+【外连接】
+扩充了内连接的功能，会把内连接删除表源中的一些保留下来
+左外连接
+	使用LEFT JOIN，结果集包含LEFT JOIN中指定的左表的所有行
+	若左表的某一行在右表中没有匹配行，则在结果集中右表显示为空值
+	SELECT * FROM COPY5
+	LEFT JOIN Exercise5
+	ON COPY5.AGE =Exercise5.Age
+	
+右外连接
+	使用RIGHT JOIN
+	如果右表中的某一行在左表中没有匹配行，则将左表返回空值
+	SELECT * FROM COPY5
+	RIGHT JOIN Exercise5
+	ON COPY5.AGE =Exercise5.Age
+
+全外连接
+	使用FULL JOIN
+	当某一行在另一张表中没有匹配行时，另一个表的选择列将包含空值
+	SELECT * FROM COPY5
+	FULL JOIN Exercise5
+	ON COPY5.AGE =Exercise5.Age
+	
+交叉连接
+	使用CROSS JOIN
+	没有WHERE子句的交叉连接将产生连接所涉及的表的笛卡尔乘积
+	交叉连接中的列 = 原表中列的数量的总和
+	交叉连接中的行 = 原表中行数的积
+	select * from copy5
+	cross join exercise5
+	
+【连接多表】
+在WHERE子句中连接多表
+	在FROM子句中写连接多个表的名称
+	然后将任意两个表的连接条件分别写在where之后
+	SELECT * FROM STUDNET,COURSE,SC
+	WHERE STUDENT.SNO = SC.SNO
+	AND SC.CNO = COURSE.CNO
+	
+在FROM子句中连接多表
+	内连接的拓展
+	SELECT * FROM STUDENT
+	JOIN SC
+	JOIN COURSE
+	ON SC.CNO = COURSE.CNO
+	ON STUDENT.SNO = SC.SNO
+	(推荐使用)
+	SELECT * FROM COPY5
+	JOIN Exercise5  ON COPY5.AGE = Exercise5.Age
+	JOIN Grade  ON COPY5.NAME <> Grade.Name
+		
+	
+【使用CASE函数进行查询】
+	SELECT SNO,CNO,
+	等级 = CASE
+	WHEN GRADE>90 THEN '优秀'
+	WHEN GRADE>80 AND GEADE<=90 THEN '良好'
+	ELSE '及格'
+	END
+	FROM SC
+	(CASE...WHEN同样可以用在update语句)
+	
+	
+	
+	
+【视图】
+视图是一种常用的数据库对象，将查询的结果以虚拟表的形式存储在数据中，
+结构和内容建立在对表的查询基础之上，基表数据变化，视图数据随之变化，
+可以禁止用户访问数据库中的基表，要求用户只能通过视图操作数据；
+分类：
+标准视图 - 保存在数据库中的SELECT语句
+索引视图 - 创建有索引的视图
+分区视图 - 一台或多台服务器水平连接一组表中的分区数据
+
+以界面形式创建/删除视图
+以SQL语句创建视图：
+	CREATE VIEW View_SandGrains
+	as
+	select * from Project_SandGrains
+
+插入数据：
+	INSERT INTO [db_test].[dbo].[View_Exercise5]
+	values(80,'宋沈阳','男')
+	
+创建带检查约束的视图
+	CREATE VIEW AA
+	AS
+	SELECT * FROM EMPLOYEE WHERE AGE>10
+	WITH CHECK OPTION
+	
+对视图进行修改：
+	ALTER VIEW View_Exercise5
+	AS
+	SELECT NAME,AGE FROM Exercise5
+
+使用UPDATE语句对数据表修改：（会影响基表）
+	update [View_Exercise5] set name = '张斌'  where name = '宋沈阳'
+	
+使用DROP VIEW 删除视图：
+	DROP VIEW VIEW_STUDNET
+	
+使用DELETE将数据表中的数据删除：
+	DELETE [View_Exercise5] WHERE  name = '张斌' 
+	
+使用存储过程exec sp_rename 对视图重命名
+	exec sp_rename [View_Exercise5],[View_Exercise0]
+	
+使用sp_helptext 获取视图定义时的相关信息
+
+
+【存储过程】
+存储过程 - 预编译SQL语句的集合
+
+3种类型：
+系统存储过程
+自定义存储过程
+拓展存储过程
+
+优点：
+1.可以嵌套使用，支持代码重用
+2.可接受与使用参数执行其中的SQL语句
+3.比一般的SQL语句执行速度更快（创建时已编译，不需要再重新编译）
+4.具有安全特效和所有权链接，以及可以附加到它们的证书
+5.允许模块化设计，一旦创建，可以在程序中调用任意多次
+6.可以减少网络通信流量，一个数百行的SQL语句可以通过一条执行过程代码的语句来执行
+7.可以强制应用程序的安全性，参数化存储过程
+
+使用CREATE PROCEDURE 语句创建存储过程
+CREATE PROCEDURE Proc_QueryPlan
+AS
+SELECT * FROM TheGrowthPath..Project_SandGrains
+
+CREATE Procedure Proc_Student
+@Proc_Sno int
+as
+select * from student where sno = @Proc_Sno
+
+
+执行存储过程
+EXEC Proc_QueryPlan
+
+查看存储过程
+SELECT * FROM sys.sql_modules
+sys.sql_modules 为系统视图，通过该视图可以查看数据库中的存储过程
+
+SELECT OBJECT_DEFINITION(18099105)
+使用object_definition 查看ID为18099105的存储过程的代码
+
+sp_helptext'Proc_Stu'
+
+修改存储过程
+Alter PROCEDURE 
+可以用来修改通过执行CREATE PROCEDURE语句创建的过程
+该语句修改并不会更改权限
+
+sp_configure
+
+ALTER PROCEDURE PTO_STU
+@SNO VARCHAR(10)
+AS
+SELECT * FROM STUDENT
+
+
+重命名存储过程
+sp_rename 'Proc_QueryPlan','Proc_QueryPlanDetail'
+
+
+删除存储过程
+Drop Procedure Proc_Student
+
+
+练习：
+create procedure Proc_Exercise5
+@name varchar(10)
+as
+select * from Exercise5 where Name =@name 
+GO
+exec Proc_Exercise5 '石三陈'
+GO
+
+
+查询当前服务器名称：
+select @@ServerName
+删除服务器名：
+sp_dropserver'servername'
+将本地服务器重新添加到服务器表中：
+sp_addserver'new servername','LOCAL'
+
+
+
+【触发器】
+一种特殊类型的存储过程
+指定表中的数据发生变化时触发器自动生效
+不能通过名称被直接调用，更不允许设置参数
+一张表可以有多个触发器，作为一个独立的单元被执行
+
+优点：
+自动执行，对表中的数据进行修改后，触发器会自动执行
+能够实现比CHECK约束更为复杂的数据完整性约束
+能够对数据库中的相关表实现级联更改
+一张表中可以存在3种不同类型的触发器：INSERT/UPDATE/DELETE
+
+3种常规类型的触发器：
+1.DML(数据操作语言)触发器 
+发生DML事件时将调用DML触发器，
+DML事件包括INSERT/UPDATE/DELETE语句，也可包含复杂的T-SQL语句
+-AFTER触发器 		执行操作语句后执行
+-INSTEAD OF触发器	代替通常的触发操作，可为一个或多个基表的视图定义触发器
+-CLR触发器			可以是AFTER/INSTEAD OF触发器，也可以是DDL触发器，
+					CLR触发器可执行在托管代码中编写的方法
+					
+2.DDL触发器
+响应数据定义语言时触发，可以在数据库中执行管理任务，如审核以及规范数据库操作
+
+3.登录触发器
+为响应LOGON事件而激发存储过程
+在登录的身份验证阶段完成之后且用户会话实际建立之前激发
+
+
+创建DML触发器
+	USE TheGrowthPath
+	GO
+	CREATE TRIGGER T_DML_E1
+	ON Project_SandGrains
+	AFTER/FOR INSERT
+	AS
+	RAISERROR(N'正在向表中插入数据',16,10)
+	
+创建DDL触发器(主要对应于CREATE/ALTER/DROP语句)
+	CREATE TRIGGER T_DDL_DATABASE
+	ON DATABASE
+	FOR DROP_TABLE,ALTER_TABLE
+	AS
+	PRINT '只有T_DDL_DATABASE触发器无效时，才可以删除或修改表'
+	ROLLBACK
+
+创建登录触发器
+在建立用户会话时引发
+	CREATE TRIGGER T_LOGON_TimeLimit2
+	ON ALL SERVER
+	FOR LOGON
+	AS
+	BEGIN
+		IF ORIGINAL_LOGIN() = 'sa'   and GETDATE() >  '2022-08-09 08:26:08.697'
+		ROLLBACK
+	END
+
+查询触发器
+	sys.object	TA-CLR触发器    TR-SQL触发器
+	
+修改触发器
+1.修改DML触发器
+	ALTER TRIGGER T_DML_E1
+	ON Project_SandGrains
+	AFTER INSERT
+	AS
+	RAISERROR(N'正在向表中插入数据',16,10)
+	
+2.修改DDL触发器
+	ALTER TRIGGER T_DDL_DATABASE
+	ON DATABASE
+	FOR ALTER_TABLE
+	AS
+	RAISERROR('只有"T_DDL_DATABASE" 触发器无效时，才可以修改表.',16,10)
+	ROLLBACK
+	
+3.修改登录触发器
+	ALTER TRIGGER T_LOGON_TimeLimit2
+	ON ALL SERVER 
+	FOR LOGOM
+	AS
+	BEGIN
+		IF ORIGINAL_LOGIN() = 'sa'
+		ROLLBACK
+	END
+	
+重命名触发器
+	可以使用sp_rename系统存储过程
+	sp_rename 'T_DML_E1','T_DML_E2'   
+	不会更改sys.sql_modules的定义，建议删除触发器，之后重新创建
+
+	
+禁用和启用触发器
+	DISABLE/ENABLE TRIGGER T_DML_E1/ALL ON EMPLOYEE
+	DISABLE/ENABLE TRIGGER T_DDL_DATABASE ON DATABASE
+	DISABEL/ENABLE TRIGGER T_LOGON_TimeLimit2 ON ALL SERVER
+	
+删除触发器
+	DROP TRIGGER T_DML_E1
+	DROP TRIGGER T_DDL_DATABASE ON DATABASE
+	DROP TRIGGER T_LOGON_TimeLimit2 ON ALL SERVER 
+	
+	
+练习：
+(1)	创建一个递归触发器，每次只允许删除一条记录
+	use db_Test--打开数据库
+	if EXISTS (SELECT name 	--判断触发器是否已经存在
+		FROM   sysobjects 
+		WHERE  name = 'delete_employee' --名字是delete_employee
+		AND type = 'TR')--类型是DDL触发器
+	drop trigger delete_employee--如果已经存在则删除
+	go
+	  create trigger delete_employee--重新创建delete_employee触发器
+	   on employee3	--依赖于表employee3
+		after delete as --删除记录语句
+		   declare @rowcount int --声明一个整型变量
+		   select @rowcount = @@rowcount --给@rowcount变量赋值
+	  if @rowcount>1 --如果删除记录超过1条，
+		   begin
+			print('当前删除的记录条数大于一条，一次只允许删除一条')
+			  rollback transaction	--结束事务
+		   end
+	  if @rowcount=1 --删除记录为1条
+		  begin
+			  declare @Name varchar(50) 		
+			  select @Name = Name from deleted	--提取要删除的姓名
+			delete from employee3 where Name = @Name --删除对应姓名的记录
+		  end
+	go
+
+
+(2)	创建一个触发器，实现对插入数据的约束，当插入的学生年龄不在10~50,不执行插入
+	USE db_Test
+	IF object_id('insert_student') is not null 	--判断该触发器是否存在
+	DROP TRIGGER insert_student
+	GO
+	CREATE TRIGGER insert_student--创建触发器
+	ON Student--基于学生表
+	FOR INSERT--约束INSERT操作
+	AS
+	DECLARE @Age INT--定义局部变量
+	SELECT @Age = Sage FROM INSERTED--存储插入的年龄	
+	IF(@Age > 50 OR @Age < 10)--约束年龄范围
+	BEGIN
+		PRINT '年龄不符，重新插入'
+		ROLLBACK TRANSACTION--回滚事务
+	END
+	GO
+	--INSERT INTO STUDENT VALUES(201109010,'XX','DF',100)
+	
+	
+	
+【游标】
+（避免使用游标，游标非常消耗属性）
+游标是取用一组数据并能够一次与一个单独的数据进行交互的方法
+主要用在服务器上，处理由客户端发给服务端的SQL语句
+可以定位到结果集的某一行，并可以对该行数据执行特定操作
+5个组成部分：
+声明游标
+打开游标
+从一个游标中查找信息
+关闭游标
+释放游标
+
+静态游标
+动态游标
+只进游标
+键集驱动游标
+
+
+声明游标：
+	DECLARE Cur_emp CURSOR FOR
+	SELECT * FROM EMPLOYEE
+	FOR READ ONLY //只读游标
+	
+打开游标：
+	OPEN Cur_emp
+	
+提取游标：
+	FEYCH NEXT FROM Cur_emp
+	WHILE @@FETCH_STATUS = 0
+	BEGIN
+		FETCH NEXT FROM Cur_emp
+	END
+	
+关闭游标：
+	CLOSE Cur_emp
+	
+释放游标：
+游标关闭后并没有在内存中释放所占用的系统资源
+	DEALLOCATE Cur_emp
+	
+sp_cursor_list        //报告当前为连接打开的服务器游标的属性
+sp_describe_cursor	  //报告服务器游标的属性
+
+
+练习：
+	DECLARE cur1 CURSOR							--声明游标cur1
+	FOR SELECT * FROM Exercise5 WHERE ID = 100  --游标结果集,依赖表
+	FOR UPDATE OF NAME							--更新游标中指定的姓名字段
+	OPEN cur1									--打开游标
+	GO
+	FETCH NEXT FROM cur1						--读取游标操作
+	GO	
+	UPDATE Exercise5 SET Name = '陈一磊'				
+	WHERE CURRENT OF cur1						--更新姓名中的字段
+	CLOSE cur1									--关闭游标				
+	DEALLOCATE cur1								--释放游标
+	GO
+
+
+
+
+
+
+【索引】
+为了加速对表中数据行的检索而创建的一种分散存储结构：
+索引可快速找到表或索引视图中的特定信息；
+包含从表或视图中一个或多个列生成的键，以及映射到指定数据的存储位置的指针；
+
+一个表的存储由两部分组成：a.存放标的数据页 b.存放索引页
+
+优点：
+创建唯一索引，保证数据库表中每一行数据的唯一性；
+加快数据的检索速度
+加速表与表的连接
+使用分组和排序子句进行数据检索时，可减少查询中分组和排序的时间
+
+缺点：
+创建和维护索引需要耗费时间，且会随着数据量的增加而增加
+需要占用物理空间，如果要建立聚集索引，需要的空间更大
+当对表中的数据进行增加/删除/修改时，索引也要动态地维护，降低了数据的维护速度
+
+
+
+索引的分类
+按照存储结构的不同，可将索引分成两类：
+a.聚集索引
+	根据数据行的键值在表或视图中排序和存出这些数据行；
+	每个表中只能有一个聚集索引，因为数据行本身只能按一个顺序排序；
+	没有被聚集索引组织的页称为 堆
+	物理上连续存在
+b.非聚集索引
+	独立于数据行的结构；一个表可以存在多个
+	逻辑上的存续，物理存储并不连续
+	一张表可以创建249个非聚集索引
+
+详：
+IAM(INDEX ALLOCATION MAP)
+	SQL SERVER会为每一张表建立一个索引分配映射
+	一张表无论有无聚集索引，都始终有一个IAM
+RID(ROW ID)
+	由文件ID，页ID和slot ID 组成
+	每一页大小8kb，数据库文件存储的基本单位
+全表扫描
+	如果一个表没有建立聚集索引，只能靠IAM的距离，来确定表的范围
+索引在SQL SERVER数据库中对应使用的数据结构是“多叉平恒查询树”
+	一个叶子节点存储的是多行数据
+	从叶子结点开始，向上添加枝和根（查找时还是从根节点开始）
+聚集索引
+	叶子节点直接存放的是行数据，决定了表中行的物理存放位置
+非聚集索引
+	叶子节点存放的是指向行数据的指针
+	a.如果表上已经有列建立了聚集索引，指针记录的是聚集索引的键值
+	b.如果表上没有任何聚集索引，指针只能记录数据行的RID
+唯一和非唯一索引：
+	SQL SERVER 给所有的索引键值中都添加了一个后缀uniquifier
+	如果是唯一索引，该值始终为空，相当于不使用
+	如果是非唯一索引，会为uniquifier自动赋值
+	
+自动建立索引
+	设立primary key约束时
+		表上没有聚集索引，会自动创建一个聚集唯一索引
+		表上已有聚集索引，会创建一个非聚集唯一索引
+		
+	设立unique约束
+		会自动创建一个唯一非聚集索引
+		唯一约束本质上依赖唯一索引，二者具有相同的作用
+	创建时默认非唯一非聚集
+
+
+
+	
+创建索引
+（创建非聚集非唯一索引）
+	CREATE INDEX IX_Teacher_NAME
+	ON Terchar(NAME)
+（创建聚集唯一索引）
+	CREATE UNIQUE CLUSTERED INDEX IX_STUDENT_SNO ON STUDENT(SNO)
+（创建组合索引）
+	CREATE INDEX IX_TEACHER_AGE_GENDER ON TEACHER(AGE,GENDER)
+	创建多字段的索引时，各字段的排列顺序决定了其优先级
+一些指定参数
+	WITH FILLFACTOR  		 指定创建索引过程中，各索引页的填满程度
+	WITH IGNOR_DUP_KEY  	 控制向唯一非聚集索引的列插入重复的键值时发生的情况，
+							 如果执行了创建重复键的INSERT语句，将发出警告忽略重复的行
+创建的原则
+	只有表的所有者可以在同一个表中创建索引
+	每个表只能创建一个聚集索引
+	每个表中最多可以创建249个非聚集索引
+	在经常查询的字段上建立索引
+	定义text、image、bit数据类型的列上不要建立索引
+	在外键列上可以建立索引
+	主键列上一定要建立索引
+	在那些重复值比较多、查询较少的列上不要建立索引
+	
+
+查看索引信息
+	使用系统存储过程查看索引
+		sp_helpindex 'Project_SandGrains'
+	使用系统表查看索引信息
+	系统表 sysobjects(记录当前数据库中所有对象的相关信息)
+	系统表 sysindexes(记录有关索引和建立索引表的相关信息)
+		select id,name from sysindexes
+		where id = (
+			select id from sysobjects where name = 'Project_SandGrains'
+		)
+
+
+更改索引名称
+	EXEC sp_rename 'oldname','newname'
+
+
+删除索引
+	DROP INDEX STUDENT_IX_NAME
+	DROP INDEX 表示从当前数据库中删除一个或多索引
+			   不适用于通过定义 PRIMARY KEY	或 UNIQUE约束 创建的索引
+			   若要删除，需要使用DROP CONSTRAINT语句
+			   
+索引的设置选项
+	PAD_IDNEX	  设置创建索引期间中间级别页中可用空间的百分比
+	FILLFACTIOR   设置创建索引期间每个索引页的页级别中可用空间的百分比
+	ASC/DESC 	  将查询结构按指定属性的升序或降序排列
+	·			  CREATE CLUSTERED INDEX IX_TEP1 ON STUDNET(SAGE DESC,SNO ASC)
+	DROP_EXISTING 指示应删除和重新创建现有索引
+	
+	
+索引的分析
+	使用SHOWPLAN 语句
+		显示查询语句的执行信息，包含查询过程中连接表时所采取的每个步骤以及选择哪个索引
+		SET SHOWPLAN_ALL ON
+		GO
+		SELECT * FROM EXERCISE5    
+	使用STATISTICS IO语句
+		显示T-SQL语句生成的磁盘活动量的信息
+		SET STATISTICS IO ON
+		GO
+		select * from Exercise5
+	
+索引的维护
+	使用DBCC SHOWCONFIG 语句
+		显示指定表的数据和索引的碎片信息；
+		当对表进行大量修改或添加数据后，应执行该语句查看是否有碎片
+		DBCC SHOWCONTIG(EXERCISE5) WITH FAST
+		FAST - 快速扫描不读取索引的叶级或数据级页
+		
+	使用DBCC DBREINDEX 语句
+		对指定数据库中的表重新生成一个或多个索引
+		DBCC DBREINDEX('TABLENAME',INDEXNAME,100)
+		100 - 每个索引页上用于存储数据的空间百分比
+		
+	使用DBCC INDEXDEFRAG 语句
+		指定表或视图的索引碎片整理
+		DBCC INDEXDEFRAG(DATABASENAME,TABLENAME,INDEXNAME)
+		
+
+全文索引
+	一种特殊类型的基于标记的功能性索引，由SQL SERVER 全文引起生成和维护
+	数据库启用/删除全文索引 
+		USE DB_TEST
+	·	EXEC SP_FUILTEXT_DATABASE 'ENABLE'/DISABLE
+	表启用/删除全文索引
+		创建步骤：
+			a.为表创建一个唯一的非空索引
+			b.用表所在的数据库启用全文索引
+			c.在该数据库中创建全文索引目录
+			d.用表启用全文索引标记
+			e.向表中添加索引字段
+			f.激活全文索引
+			g.启动完全填充
+		删除：
+			DROP FULLTEXT INDEX ON TABLENAME
+		
+		
+全文目录
+	虚拟对象，不属于任何文件组，表示一组全文索引的逻辑概念
+	创建/删除/重创建（省略）：
+		sp_fulltext_catalog 已删除
+		...
+	
+
+
+数据完整性	
+	主要体现以下几点：
+		数据类型准确无误
+		数据取值符合范围
+		多个数据表之间的数据不存在冲突
+		
+	域完整性
+		域通常指列(字段)
+		实现域完整性的方法：
+			a.限制类型
+			b.格式(CHEKC约束)
+			c.取值范围(CHECK,DEFAULT,NOT NULL)
+		具体实现机制：
+			DEFAULT
+			CHECK
+			FOREIGN KEYDATA TYPE
+			RULE
+		
+		
+		
+	实体完整性
+		所有的记录都应该有一个唯一的标识
+		实现机制：
+			UNIQUE INDEX
+			PRIMARY KEY
+			UNIQUE KEY
+			IDENTITY COLUMN
+		
+	
+	
+	引用完整性	
+		保证主表中的数据与从表中数据的一致性
+		实现机制：
+			FOREIGN KEY
+			CHECK
+			TRIGGER
+			STORED PROCEDURE
+		例子：创建student5，要求表中所用的索书名、借书正好和时间组合都必须出现在student4中
+			CREATE TABLE STUDENT5
+			(
+				借书证号 char(8)  not null,
+				ISBN char(16) not null,
+				索书名	char(10) not null,
+				借书时间 date not null,
+				还书时间 date not null,
+				CONSTRAINT FK_POINT FOREIGN KEY(索书名,借书证号,借书时间)
+				REFERENCES STUDENT4(索书名,借书证号,借书时间)
+			)
+			
+				
+	用户定义完整性
+		所有完整性类别都支持用户定义完整性，包括存储过程以及触发器
+		
+		
+练习：
+(1)	基于studnet和student1创建一个视图，并在视图上创建一个索引并查询数据
+--创建视图
+	CREATE  VIEW V_Score 
+	WITH SCHEMABINDING		--绑定到架构
+	AS 
+	   SELECT stu.Sname,stu.Sex,stu1.BestScore
+	   FROM   dbo.student as stu, dbo.student1 as stu1 
+	   WHERE  stu.Sno = stu1.ID
+	GO
+	--在视图V_Score上创建索引
+	create unique clustered index I_Score on V_Score (Sname,Sex,BestScore)
+	select * from V_Score		--在视图V_Score上查询数据
+	with(index(I_Score))		--使用所用I_Score	
+
+
+(2)
+	select * from sysindexes where name = 'IX_main_content_and_sub_content'
+	select * from sys.indexes where name = 'IX_main_content_and_sub_content'
+	DBCC CHECKTABLE('Project_SandGrains',4)
+	
+	
+	
+	
+	
+【事务】
+由一系列语句构成的逻辑工作单元
+事务必须满足4种属性：ACID
+(1)原子性(Atomic) - 事务是一个整体的工作单元，对数据库的操作要么全部执行要么全部取消，
+					某条语句执行失败，必须回滚；  （步骤层面）
+(2)一致性(Consistency) - 针对事务操作前与操作后，数据必须保持一致状态 （数据层面）
+(3)隔离性(Isolated) - 针对多个用户同时操作，排除其他事务对本次事务的影响
+(4)持久性(Durability) - 事务提交后，对数据库做的修改会永久保存下来
+
+自动提交事务 - 每条单独的语句都是一个事务
+
+显示事务
+用户自定义或用户指定的事务
+BEGIN TRAN(TRANSACTION) 启动一个事务，标志事务的开始
+COMMIT (TRANSACTION) 标志事务的结束
+ROLLBACK (TRANSACTION) 撤销事务做的更改
+ps ： TRANSACTION 和 WORK 区别 - TRANSACTION 接受用户自定义的事务名称
+
+
+隐式事务
+需要使用 SET IMPLICIT_TRANSATION ON 语句将隐式事务模式设置为打开
+打开隐式事务的设置之后，执行下一条语句时自动启动一个事务，直到关闭开关
+SQL SERVER 任何数据修改语句都是隐式事务
+结束隐式事务需要使用 ROLLBACK 语句
+
+
+使用事务
+繁琐写法：
+BEGIN TRANSACTION UPDATE_DATA
+...
+COMMIT TRANSACTION UPDATA_DATA
+
+@@ERROR 函数，判断最后的T-SQL语句是否执行成功，
+两个返回值 - 执行成功，返回0；产生错误，返回错误号
+
+
+SAVE TRAN SAVEPOINTT_NANE  事务内部设置保存点
+
+
+事务的工作机制
+1.当代码中出现BEGIN TRAN语句，SQL SERVER将会显示事务，并给新事务分配一个事务ID
+2.事务开始后，执行事务体语句，并将事务语句记录到事务日志中
+3.在内存中执行事务日志中所记录的事务体语句
+4.执行到COMMIT语句时会结束事务，同时事务日志也会被写到数据库的日志设备上，从而保证日志可以被恢复
+
+
+
+自动提交事务
+SQL SERVER 默认的事务处理方式，
+任一条有效的SQL	语句执行后，对数据库做的修改将被自动提交；
+若发生错误，会自动回滚并返回错误信息
+
+
+
+事务的并发处理
+1.丢失更新（两次update）
+当两个及以上的事务选择同一行，基于最初值进行更新，每个事务都不知道彼此的存在，
+最后的更新会重写其他事务所做的更新，导致数据丢失；
+2.脏读（update未提交read）
+一个事务读取了另外一个事务尚未提交的更新
+3.不可重复读（A更新未提交，B,C更新立马提交）
+当事务多次访问同一行数据，并且每次读取的数据不同时，将会发生不一致分析问题
+4.幻象读（A查询第一次，B插入，A查询第二次，结果集不一致）
+第一个事务对表中的全部数据进行修改，同时第二个事务向表中插入一行新数据，
+会导致第一个事务的用户发现表中还有没有修改的数据行
+
+
+
+事务的隔离级别
+当事务接受不一致的数据级别时被称为隔离级别
+若隔离级别比较低，会增加事务的并发问题
+使用 SET TRANSACTION ISOLATION LEVEL 语句设置事务的隔离级别
+在开启事务之前进行设置
+SQL SERVER 默认的隔离级别是 READ COMMITTED
+参数：
+1.READ Uncommitted 未提交读
+2.READ COMMITTED 提交读
+3.REPETABLE READ 可重复读
+4.SERIALIZABLE 可串行读
+例：
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
+BEGIN TRAN
+SELECT * FROM EMPLOYEE
+ROLLBACK
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ
+INSERT INTO EMPLOYEE VALUES('','',',')
+
+
+
+【锁】
+一种机制，避免事务的并发问题
+锁模式：
+共享(S) - 用于只读操作，如SELECT语句,避免幻影读和不可重复读
+更新(U) - 用于UPDATE/DELETE之前的查找，查找过程中使用U-LOCK，找到变成X-LOCK
+排他(X) - 用于INSERT/UPDATE，锁定的资源既不能读也不能改
+意向	- 在需要加锁节点的上一级加上“意向锁”，提高锁查找的性能
+架构	- 执行依赖于表架构的操作
+大容量更新(BU) - 允许进程将数据并发地大容量复制到同一张表中
+
+执行原理：
+任何事务必须加锁才能执行
+当所针对的数据 a.已经有锁，且和要加的锁冲突，不能加锁和执行，需要等待锁释放
+			   b.没有锁，或者现有锁和要加的锁兼容，可以加锁并执行
+			   
+锁的粒度
+如果锁的粒度大，则并发性高且开销大；如果锁的粒度小，则并发性低开销小
+行锁	-	行标识符，用于单独锁定表中的一行，最小的锁
+键锁	-	锁定索引的节点，保护可串行事务中的键范围
+页锁	-	锁定8kb的数据页或索引页
+拓展盘区锁 - 锁定相邻的8个数据页或索引页
+表锁	-	锁定整个表
+数据库锁 -  锁定整个数据库
+25个行锁可以升级为一个页锁；数据库锁用于在进行数据操作时，可防止其他用户对此数据库进行各种操作
+
+查看锁
+select * from sys.dm_tran_locks
+
+死锁
+当两个或多个线程有循环相关性时，会发生死锁；
+死锁可能发生在任何多线程系统中，不仅发生在关系数据库管理系统中；
+具体条件 ： 双方均需要对方释放锁为前提，才能继续前行；而要释放锁，又必须事务继续前行
+使用S锁代替U锁，很容易造成死锁
+事务在提交或者回滚之前不能释放持有的锁
+
+可使用LOCK_timeout设置程序请求锁定的最长等待时间，超过了最长等待时间，该语句会自动取消
+SWT LOCK_timeout 5000
+主要用于自定义锁超时
+
+
+
+分布式事务处理
+跨越两个或多个数据库
+分布式事务处理协调器（DTC） - 负责协调跨计算机系统和资源管理器分布的事务
+
+样例：
+USE db_Test
+BEGIN TRANSACTION T_A				--开始事务T_A
+	BEGIN TRANSACTION T_B			--开始事务T_B
+	INSERT INTO Student VALUES(201109011,'AA','男',26)
+	COMMIT TRANSACTION T_B			--提交事务T_A
+ROLLBACK TRANSACTION T_A			--回滚事务T_B
+--SELECT * FROM Student				--查看Student表
+
+
+
+
+
+【数据库的维护】
+脱机
+联机
+
+分离和附加数据库
+除了系统数据库以外，其他的数据库都可以从服务器的管理中分离出来
+分离 - 任务-分离
+附加 - 数据库-附加
+
+
+导入/导出数据（可指定文件格式）
+任务-导入数据 源数据库-指定数据库
+任务-导出数据 源数据库-指定数据库
+
+
+
+备份
+完整备份 - 包括特定数据库中的所有数据，以及可以恢复这些数据的足够的日志
+差异备份 - 是记录自上次完全数据库备份之后对数据库的更改的数据库备份
+文件备份 - 分别备份和还原数据库中的文件
+
+恢复模式 - 控制事务日志维护
+简单恢复 - 允许数据库恢复到最新的备份，仅用于测试和开发数据库或包含的大部分数据为只读的数据库
+		   只恢复到最近的完整/差异备份，不备份事务日志
+完全恢复 - 允许将数据库恢复到故障点状态
+大容量日志记录恢复 - 对完全恢复模式的补充，对某些大规模操作(如创建索引)，比完全恢复模式性能更高，
+					 但会降低时间点恢复的灵活性
+
+
+任务-备份
+
+恢复数据库
+任务-还原（选择备份集）
+
+
+收缩数据库和文件
+SQL SERVER对数据库空间分配采用的是“先分配、后使用”的机制，因此数据库在使用中会存在多余的空间；
+造成存储空间的浪费；
+自动收缩数据库 - 数据库属性-选项-自动收缩(TRUE)
+手动收缩数据库 - 任务-收缩-数据库-附加
+
+
+生成执行SQL脚本
+脚本是存储在文件中的一系列SQL语句，可再用的模块化代码
+单机指定数据库/数据表 - 编写数据库脚本为
+
+master..syslogins    
+master..sysdatabases
+
+
+
+【数据库的安全机制】
+登录管理 - windows验证模式/混合验证模式
+
+T-SQL语句创建登录用户
+CREATE LOGIN MR_LI WITH PASSWORD = 'MrBruceLi'
+ALTER LOGIN MR_LI WITH PASSWORD = 'MrBruceLi'
+DROP LOGIN MR_LI
+
+用户及权限管理
+登录名创建之后，用户只能通过该登录名访问整个SQL SERVER，而非某个具体的库
+需要创建一个数据库用户账户 - 指定数据库-新增用户
+
+
+
+
+
+项目-企业人事管理系统
+要求：可存储/修改员工信息，存储照片
+制作项目之前需要制作业务流程图
