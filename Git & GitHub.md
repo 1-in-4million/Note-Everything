@@ -151,7 +151,27 @@ git rm --cached< file > 把文件从工作区和暂存区同时删除
   可以在项目的任意目录下创建.gitignore文件，这样只对该目录及其子目录生效
 ```
 
+## 3.GitHub相关
+- **SSH配置**
+  ```
+  以Git Bash下操作为例：
+  1.退回根目录: cd ..
 
+  2.生成SSH密钥(以RSA算法为例)：
+  ssh-keygen -t -rsa -b 4096 -C "your_email@example.com"
+
+  3.设置密钥名称和存储位置，密码短语: Enter默认
+
+  4.启动SSH代理程序: 
+  eval "$(ssh-agent -s)"
+
+  5.添加SSH密钥到代理:
+  ssh-add ~/.ssh.id_rsa
+
+  6.公钥添加到GitHub账号
+
+  7.测试连接：ssh -T git@github.com
+  ```
 
 
 
